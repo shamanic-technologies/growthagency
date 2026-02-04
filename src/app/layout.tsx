@@ -2,15 +2,15 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 const SITE_URL = "https://growthagency.dev";
-const SITE_NAME = "Growth Agency";
+const SITE_NAME = "GrowthAgency.dev";
 const SITE_DESCRIPTION =
-  "Free AI-powered growth agency. Sales outreach, PR, AI search ranking, SEO — all automated, all free. Powered by open-source AI tools.";
+  "GrowthAgency.dev — Free AI-powered growth agency. Sales outreach, PR, AI search ranking, SEO — all automated, all free. Powered by open-source AI tools.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Growth Agency — Free AI-Powered Growth",
-    template: "%s | Growth Agency",
+    default: "GrowthAgency.dev — Free AI-Powered Growth",
+    template: "%s | GrowthAgency.dev",
   },
   description: SITE_DESCRIPTION,
   keywords: [
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: SITE_URL,
     siteName: SITE_NAME,
-    title: "Growth Agency — Free AI-Powered Growth",
+    title: "GrowthAgency.dev — Free AI-Powered Growth",
     description:
       "Free AI-powered growth agency. Sales, PR, AI ranking, SEO — all automated, all free.",
     images: [
@@ -43,13 +43,13 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Growth Agency — Free AI-Powered Growth",
+        alt: "GrowthAgency.dev — Free AI-Powered Growth",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Growth Agency — Free AI-Powered Growth",
+    title: "GrowthAgency.dev — Free AI-Powered Growth",
     description: SITE_DESCRIPTION,
     images: ["/og-image.png"],
   },

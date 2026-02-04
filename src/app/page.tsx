@@ -191,7 +191,7 @@ export default function Home() {
                 >
                   MCP Factory
                 </a>
-                , an open-source automation platform. Growth Agency runs
+                , an open-source automation platform. GrowthAgency.dev runs
                 entirely on it. Since we own the infrastructure, the platform
                 cost for us is zero.
               </p>
@@ -352,7 +352,7 @@ export default function Home() {
             guarantees. I built the tools to make that obsolete.
           </p>
           <p className="text-slate-600 mb-8 leading-relaxed max-w-2xl mx-auto">
-            Growth Agency runs on{" "}
+            GrowthAgency.dev runs on{" "}
             <a
               href="https://github.com/shamanic-technologies/mcpfactory"
               target="_blank"
@@ -423,9 +423,9 @@ export default function Home() {
       <footer className="bg-slate-950 text-slate-500 py-12 px-4 border-t border-slate-800">
         <div className="max-w-4xl mx-auto text-center">
           <div className="flex items-center justify-center gap-2 mb-4">
-            <Image src="/logo_2.png" alt="Growth Agency" width={28} height={28} className="rounded-md" />
+            <Image src="/logo_2.png" alt="GrowthAgency.dev" width={28} height={28} className="rounded-md" />
             <span className="font-bold text-white text-lg">
-              Growth<span className="text-emerald-400">Agency</span>
+              Growth<span className="text-emerald-400">Agency</span><span className="text-slate-400">.dev</span>
             </span>
           </div>
           <p className="text-sm mb-6">
@@ -458,7 +458,7 @@ export default function Home() {
             </a>
           </div>
           <p className="text-xs text-slate-600">
-            &copy; {new Date().getFullYear()} Growth Agency. All rights
+            &copy; {new Date().getFullYear()} GrowthAgency.dev. All rights
             reserved.
           </p>
         </div>
