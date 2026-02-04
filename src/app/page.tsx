@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Navbar } from "@/components/navbar";
 import { ServiceCard } from "@/components/service-card";
 
@@ -422,9 +423,7 @@ export default function Home() {
       <footer className="bg-slate-950 text-slate-500 py-12 px-4 border-t border-slate-800">
         <div className="max-w-4xl mx-auto text-center">
           <div className="flex items-center justify-center gap-2 mb-4">
-            <div className="w-7 h-7 bg-emerald-500 rounded-md flex items-center justify-center font-bold text-white text-xs">
-              G
-            </div>
+            <Image src="/logo_2.png" alt="Growth Agency" width={28} height={28} className="rounded-md" />
             <span className="font-bold text-white text-lg">
               Growth<span className="text-emerald-400">Agency</span>
             </span>
