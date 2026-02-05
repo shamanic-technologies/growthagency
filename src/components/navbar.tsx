@@ -10,9 +10,9 @@ export function Navbar() {
     <nav className="bg-slate-950/80 backdrop-blur-md border-b border-slate-800 sticky top-0 z-50">
       <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
         <a href="/" className="flex items-center gap-2">
-          <Image src="/logo_2.png" alt="Growth Agency" width={32} height={32} className="rounded-lg" />
+          <Image src="/logo.jpg" alt="GrowthAgency.dev" width={32} height={32} className="rounded-lg" />
           <span className="font-bold text-xl text-white">
-            Growth<span className="text-emerald-400">Agency</span>
+            Growth<span className="text-emerald-400">Agency</span><span className="text-slate-400">.dev</span>
           </span>
         </a>
 
