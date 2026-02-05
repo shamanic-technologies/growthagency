@@ -94,7 +94,7 @@ export default function Home() {
             100% Free — Powered by Open Source AI
           </div>
           <h1 className="text-5xl md:text-7xl font-extrabold mb-6 text-white leading-tight">
-            Your Growth Team,
+            Your Growth Team!
             <br />
             <span className="gradient-text">Fully Automated</span>
           </h1>
