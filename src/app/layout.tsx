@@ -14,6 +14,7 @@ export const metadata: Metadata = {
   },
   description: SITE_DESCRIPTION,
   keywords: [
+    "GrowthAgency.dev",
     "growth agency",
     "AI growth",
     "free growth agency",
@@ -25,11 +26,17 @@ export const metadata: Metadata = {
     "BYOK",
     "open source",
     "MCP",
+    "MCP Factory",
     "press coverage",
     "backlinks",
+    "PressBeat",
   ],
   authors: [{ name: "Kevin Lourd" }],
   creator: "Kevin Lourd",
+  icons: {
+    icon: "/favicon.jpg",
+    apple: "/favicon.jpg",
+  },
   openGraph: {
     type: "website",
     locale: "en_US",
@@ -63,13 +70,37 @@ const jsonLd = {
   "@context": "https://schema.org",
   "@type": "Organization",
   name: SITE_NAME,
+  alternateName: "GrowthAgency",
   url: SITE_URL,
+  logo: `${SITE_URL}/logo.jpg`,
+  image: `${SITE_URL}/logo.jpg`,
   description: SITE_DESCRIPTION,
+  email: "kevin@growthagency.dev",
+  sameAs: [
+    "https://www.linkedin.com/in/kevin-lourd-3394b025/",
+    "https://github.com/shamanic-technologies/mcpfactory",
+  ],
   founder: {
     "@type": "Person",
     name: "Kevin Lourd",
     url: "https://www.linkedin.com/in/kevin-lourd-3394b025/",
+    jobTitle: "Founder",
   },
+  knowsAbout: [
+    "AI-powered marketing",
+    "Sales outreach automation",
+    "PR automation",
+    "AI search ranking",
+    "SEO",
+    "MCP Factory",
+  ],
+};
+
+const websiteJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: SITE_NAME,
+  url: SITE_URL,
 };
 
 export default function RootLayout({
@@ -83,6 +114,10 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
         />
       </head>
       <body className="antialiased">{children}</body>

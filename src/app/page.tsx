@@ -423,7 +423,7 @@ export default function Home() {
       <footer className="bg-slate-950 text-slate-500 py-12 px-4 border-t border-slate-800">
         <div className="max-w-4xl mx-auto text-center">
           <div className="flex items-center justify-center gap-2 mb-4">
-            <Image src="/logo_2.png" alt="GrowthAgency.dev" width={28} height={28} className="rounded-md" />
+            <Image src="/logo.jpg" alt="GrowthAgency.dev" width={28} height={28} className="rounded-md" />
             <span className="font-bold text-white text-lg">
               Growth<span className="text-emerald-400">Agency</span><span className="text-slate-400">.dev</span>
             </span>
