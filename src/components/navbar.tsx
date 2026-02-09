@@ -1,62 +1,51 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
+import { LetsTalkButton } from "./lets-talk-button";
 
 export function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <nav className="bg-slate-950/80 backdrop-blur-md border-b border-slate-800 sticky top-0 z-50">
+    <nav className="bg-white/80 backdrop-blur-xl border-b border-slate-100 sticky top-0 z-50">
       <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-        <a href="/" className="flex items-center gap-2">
-          <Image src="/logo.jpg" alt="GrowthAgency.dev" width={32} height={32} className="rounded-lg" />
-          <span className="font-bold text-xl text-white">
-            Growth<span className="text-emerald-400">Agency</span><span className="text-slate-400">.dev</span>
+        <a href="/" className="flex items-center">
+          <span className="font-bold text-xl tracking-tight text-slate-900">
+            Growth<span className="text-emerald-500">Agency</span>
+            <span className="text-slate-300 font-normal">.dev</span>
           </span>
         </a>
 
-        <div className="hidden md:flex items-center gap-6">
+        <div className="hidden md:flex items-center gap-8">
           <a
             href="#services"
-            className="text-slate-400 hover:text-emerald-400 text-sm transition"
+            className="text-slate-500 hover:text-slate-900 text-sm font-medium transition"
           >
             Services
           </a>
           <a
-            href="#why-free"
-            className="text-slate-400 hover:text-emerald-400 text-sm transition"
+            href="#ai-search"
+            className="text-slate-500 hover:text-slate-900 text-sm font-medium transition"
           >
-            Why Free
-          </a>
-          <a
-            href="#ai-ranking"
-            className="text-slate-400 hover:text-emerald-400 text-sm transition"
-          >
-            AI Ranking
+            Search Visibility
           </a>
           <a
             href="#about"
-            className="text-slate-400 hover:text-emerald-400 text-sm transition"
+            className="text-slate-500 hover:text-slate-900 text-sm font-medium transition"
           >
             About
           </a>
-          <a
-            href="#contact"
-            className="bg-emerald-500 text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-emerald-600 transition shadow-lg"
-          >
-            Get Started Free
-          </a>
+          <LetsTalkButton className="bg-slate-900 text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-slate-800 transition cursor-pointer" />
         </div>
 
         <button
           onClick={() => setMenuOpen(!menuOpen)}
-          className="md:hidden p-2 rounded-lg hover:bg-slate-800 transition"
+          className="md:hidden p-2 rounded-lg hover:bg-slate-50 transition"
           aria-label="Toggle menu"
         >
           {menuOpen ? (
             <svg
-              className="w-6 h-6 text-slate-300"
+              className="w-6 h-6 text-slate-600"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -70,7 +59,7 @@ export function Navbar() {
             </svg>
           ) : (
             <svg
-              className="w-6 h-6 text-slate-300"
+              className="w-6 h-6 text-slate-600"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -87,39 +76,28 @@ export function Navbar() {
       </div>
 
       {menuOpen && (
-        <div className="md:hidden border-t border-slate-800 bg-slate-950">
+        <div className="md:hidden border-t border-slate-100 bg-white">
           <div className="max-w-6xl mx-auto px-4 py-3 space-y-1">
             <a
               href="#services"
-              className="block px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800 transition"
+              className="block px-3 py-2 rounded-lg text-slate-600 hover:bg-slate-50 transition"
             >
               Services
             </a>
             <a
-              href="#why-free"
-              className="block px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800 transition"
+              href="#ai-search"
+              className="block px-3 py-2 rounded-lg text-slate-600 hover:bg-slate-50 transition"
             >
-              Why Free
-            </a>
-            <a
-              href="#ai-ranking"
-              className="block px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800 transition"
-            >
-              AI Ranking
+              Search Visibility
             </a>
             <a
               href="#about"
-              className="block px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800 transition"
+              className="block px-3 py-2 rounded-lg text-slate-600 hover:bg-slate-50 transition"
             >
               About
             </a>
-            <div className="pt-2 border-t border-slate-800">
-              <a
-                href="#contact"
-                className="block w-full bg-emerald-500 text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-emerald-600 text-center"
-              >
-                Get Started Free
-              </a>
+            <div className="pt-2 border-t border-slate-100">
+              <LetsTalkButton className="block w-full bg-slate-900 text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-800 text-center cursor-pointer" />
             </div>
           </div>
         </div>
