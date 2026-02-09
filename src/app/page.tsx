@@ -1,86 +1,143 @@
-import Image from "next/image";
 import { Navbar } from "@/components/navbar";
-import { ServiceCard } from "@/components/service-card";
-
-const SERVICES = [
-  {
-    icon: "📧",
-    title: "Sales Outreach",
-    description:
-      "Automated cold email campaigns. We find leads, generate personalized emails, send them, and optimize — you just provide your URL.",
-    isAvailable: true,
-  },
-  {
-    icon: "📰",
-    title: "PR & Press Coverage",
-    description:
-      "Get featured in real publications. Announcements and thought leadership articles — all organic press, no paid placements.",
-    isAvailable: true,
-  },
-  {
-    icon: "🤖",
-    title: "AI Search Ranking",
-    description:
-      "27% of sources used by ChatGPT come from organic press. We get you cited in AI search results through strategic PR.",
-    isAvailable: true,
-  },
-  {
-    icon: "🔍",
-    title: "SEO Ranking",
-    description:
-      "High-authority backlinks from real press coverage. Each article is a permanent SEO asset that compounds over time.",
-    isAvailable: true,
-  },
-  {
-    icon: "📢",
-    title: "Ads Management",
-    description:
-      "Automated campaign management for Google, Reddit, and X. Set your budget, we handle the rest.",
-    isAvailable: false,
-  },
-  {
-    icon: "🎬",
-    title: "Content Creation",
-    description:
-      "AI-generated content for Instagram, TikTok, and LinkedIn. Consistent posting without the effort.",
-    isAvailable: false,
-  },
-  {
-    icon: "💰",
-    title: "Investor Newsletter",
-    description:
-      "Weekly or monthly investor updates generated automatically from your metrics and milestones.",
-    isAvailable: false,
-  },
-  {
-    icon: "📋",
-    title: "Product Update Newsletter",
-    description:
-      "Monthly product changelog and updates sent to your users, auto-generated from your releases.",
-    isAvailable: false,
-  },
-];
+import { ServicesSection } from "@/components/services-section";
+import { LetsTalkButton } from "@/components/lets-talk-button";
+import { ContactSection } from "@/components/contact-section";
 
 const STEPS = [
   {
     number: "1",
     title: "Tell us about your company",
     description:
-      "Share your URL and what you're looking for — sales leads, press coverage, SEO, or all of the above.",
+      "Share your URL, your goals, and your target audience. We'll analyze your market and competitors.",
   },
   {
     number: "2",
-    title: "We set up your campaigns",
+    title: "We build your strategy",
     description:
-      "Using AI tools, we configure and launch your growth campaigns. Cold email, PR outreach, everything automated.",
+      "Your dedicated strategist designs a custom growth plan — outreach, PR, SEO, all tailored to your business.",
   },
   {
     number: "3",
-    title: "You get results",
+    title: "You get results — guaranteed",
     description:
-      "Leads in your inbox, press articles live, backlinks accumulating. Regular reports so you see exactly what's happening.",
+      "We execute, you grow. Regular reports, transparent metrics, and a money-back guarantee if we don't deliver.",
   },
 ];
+
+const SERVICE_DETAILS = [
+  {
+    id: "sales-leads",
+    title: "Get More Sales Leads",
+    description:
+      "We identify and reach out to your ideal prospects. Personalized cold emails, smart follow-ups, and continuous optimization — all handled for you.",
+    stats: [
+      { value: "5x", label: "cheaper than agencies" },
+      { value: "24h", label: "to first campaign" },
+      { value: "A/B", label: "tested automatically" },
+    ],
+    highlight:
+      "You provide your URL. We find the leads, write the emails, and fill your inbox with qualified prospects.",
+  },
+  {
+    id: "press-coverage",
+    title: "Get Published in the Press",
+    description:
+      "We pitch your story to journalists at real publications. Announcements, thought leadership, and organic press coverage — no paid placements.",
+    stats: [
+      { value: "DR50+", label: "publication quality" },
+      { value: "100%", label: "organic press" },
+      { value: "90d", label: "money-back guarantee" },
+    ],
+    highlight:
+      "Every press article is a permanent asset — boosting SEO, AI visibility, and brand credibility. It compounds.",
+  },
+  {
+    id: "ai-search",
+    title: "Be More Visible in AI Search",
+    description:
+      "ChatGPT, Perplexity, and other tools are becoming the new search engines. If you're not in their sources, you don't exist.",
+    stats: [
+      { value: "27%", label: "of ChatGPT sources are organic press" },
+      { value: "49%", label: "for recent info queries" },
+      { value: "∞", label: "backlinks compound forever" },
+    ],
+    highlight:
+      "We get your brand mentioned in quality publications — so you get recommended. One press article = SEO boost + search visibility + credibility.",
+  },
+  {
+    id: "google-seo",
+    title: "Be More Visible on Google",
+    description:
+      "High-authority backlinks from real press coverage. Each article is a permanent SEO asset that compounds over time — unlike ads that stop the moment you stop paying.",
+    stats: [
+      { value: "DA70+", label: "average backlink authority" },
+      { value: "3-6mo", label: "to see ranking impact" },
+      { value: "∞", label: "permanent asset" },
+    ],
+    highlight:
+      "Traditional link building costs $500–$1,000 per link. Our press coverage delivers high-authority backlinks as a side effect.",
+  },
+];
+
+
+function ServiceDetailSection({
+  detail,
+  index,
+}: {
+  detail: (typeof SERVICE_DETAILS)[number];
+  index: number;
+}) {
+  const isEven = index % 2 === 0;
+  const bg = isEven ? "bg-white" : "bg-slate-50";
+
+  return (
+    <section id={detail.id} className={`py-12 sm:py-20 px-4 ${bg}`}>
+      <div className="max-w-5xl mx-auto">
+        <div
+          className={`flex flex-col ${
+            isEven ? "md:flex-row" : "md:flex-row-reverse"
+          } gap-8 sm:gap-12 items-center`}
+        >
+          {/* Text */}
+          <div className="flex-1">
+            <h3 className="text-2xl md:text-3xl font-semibold text-slate-900 mb-4 tracking-tight">
+              {detail.title}
+            </h3>
+            <p className="text-slate-500 mb-4 leading-relaxed">
+              {detail.description}
+            </p>
+            <p className="text-emerald-600 font-medium text-sm">
+              {detail.highlight}
+            </p>
+          </div>
+
+          {/* Stats */}
+          <div className="flex-1 w-full">
+            <div className="grid grid-cols-3 gap-2 sm:gap-3">
+              {detail.stats.map((stat) => (
+                <div
+                  key={stat.label}
+                  className={`rounded-xl sm:rounded-2xl p-3 sm:p-5 text-center border ${
+                    isEven
+                      ? "bg-slate-50 border-slate-100"
+                      : "bg-white border-slate-100"
+                  }`}
+                >
+                  <div className="text-xl sm:text-2xl md:text-3xl font-bold text-emerald-500 mb-1">
+                    {stat.value}
+                  </div>
+                  <p className="text-slate-400 text-xs leading-tight">
+                    {stat.label}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
 
 export default function Home() {
   return (
@@ -88,222 +145,155 @@ export default function Home() {
       <Navbar />
 
       {/* Hero */}
-      <section className="gradient-hero py-20 md:py-32 px-4 overflow-hidden">
-        <div className="max-w-5xl mx-auto text-center">
-          <div className="inline-block bg-emerald-500/10 text-emerald-400 px-4 py-1.5 rounded-full text-sm font-medium mb-6 border border-emerald-500/20">
-            100% Free — Powered by Open Source AI
-          </div>
-          <h1 className="text-5xl md:text-7xl font-extrabold mb-6 text-white leading-tight">
-            Your Growth Team!
-            <br />
-            <span className="gradient-text">Fully Automated</span>
-          </h1>
-          <p className="text-xl md:text-2xl text-slate-400 mb-4 max-w-3xl mx-auto">
-            Sales outreach, PR, AI search ranking, SEO — all done for you,
-            all free.
-          </p>
-          <p className="text-slate-500 mb-10 max-w-2xl mx-auto">
-            We use only free and open-source AI tools. No hidden fees. No
-            retainers. No catch.
-          </p>
-
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-            <a
-              href="#contact"
-              className="px-8 py-4 bg-emerald-500 text-white rounded-full hover:bg-emerald-600 font-semibold text-lg shadow-lg hover:shadow-xl transition"
-            >
-              Get Started Free
-            </a>
-            <a
-              href="#services"
-              className="px-8 py-4 bg-slate-800 text-slate-300 rounded-full hover:bg-slate-700 font-medium text-lg border border-slate-700 transition"
-            >
-              See Services
-            </a>
-          </div>
-
-          {/* Stats */}
-          <div className="flex flex-wrap gap-8 justify-center">
-            <div className="text-center">
-              <div className="text-3xl font-bold text-white">$0</div>
-              <div className="text-sm text-slate-500">Platform Cost</div>
+      <section className="gradient-hero py-16 sm:py-24 md:py-40 px-4 overflow-hidden">
+        <div className="max-w-4xl mx-auto text-center hero-glow">
+          <div className="relative z-10">
+            <div className="inline-block bg-emerald-50 text-emerald-600 px-4 py-1.5 rounded-full text-sm font-medium mb-8 border border-emerald-100">
+              Results Guaranteed — Or Your Money Back
             </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-white">BYOK</div>
-              <div className="text-sm text-slate-500">
-                Bring Your Own Keys
+            <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold mb-6 text-slate-900 leading-tight tracking-tight">
+              Your Growth Team.
+              <br />
+              <span className="gradient-text">Strategy + Execution.</span>
+            </h1>
+            <p className="text-lg sm:text-xl md:text-2xl text-slate-500 mb-4 max-w-2xl mx-auto leading-relaxed">
+              Sales outreach, PR, AI search ranking, SEO — we get you growing.
+              You get a dedicated strategist and guaranteed results.
+            </p>
+            <p className="text-slate-400 mb-12 max-w-xl mx-auto">
+              Powered by{" "}
+              <a
+                href="https://growthservice.org/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-emerald-500 hover:underline"
+              >
+                GrowthService
+              </a>{" "}
+              and{" "}
+              <a
+                href="#about"
+                className="text-emerald-500 hover:underline"
+              >
+                Humans
+              </a>
+              . Money-back guarantee if we don&apos;t deliver.
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-3 justify-center mb-16">
+              <LetsTalkButton className="px-8 py-4 bg-slate-900 text-white rounded-full hover:bg-slate-800 font-semibold text-lg transition shadow-md hover:shadow-lg cursor-pointer" />
+              <a
+                href="#services"
+                className="px-8 py-4 bg-white text-slate-600 rounded-full hover:bg-slate-50 font-medium text-lg border border-slate-200 transition"
+              >
+                See Services
+              </a>
+            </div>
+
+            {/* Stats */}
+            <div className="flex flex-wrap gap-8 sm:gap-12 justify-center">
+              <div className="text-center">
+                <div className="text-3xl font-bold text-slate-900">1:1</div>
+                <div className="text-sm text-slate-400">
+                  Dedicated Strategist
+                </div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-slate-900">100%</div>
+                <div className="text-sm text-slate-400">
+                  Money-Back Guarantee
+                </div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-slate-900">24h</div>
+                <div className="text-sm text-slate-400">
+                  To First Campaign
+                </div>
               </div>
             </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-white">100%</div>
-              <div className="text-sm text-slate-500">Open Source</div>
-            </div>
           </div>
         </div>
       </section>
 
-      {/* Services */}
-      <section id="services" className="py-20 px-4 bg-white">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4 text-slate-900">
-            Everything You Need to Grow
-          </h2>
-          <p className="text-slate-500 text-center mb-12 max-w-2xl mx-auto">
-            From cold outreach to press coverage to AI visibility — we handle
-            it all.
-          </p>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {SERVICES.map((service) => (
-              <ServiceCard key={service.title} {...service} />
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* Services Grid */}
+      <ServicesSection />
 
-      {/* Why Free */}
-      <section
-        id="why-free"
-        className="py-20 px-4 bg-gradient-to-b from-slate-50 to-white"
-      >
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4 text-slate-900">
-            Why Is This Free?
+      {/* Service Detail Sections */}
+      {SERVICE_DETAILS.map((detail, i) => (
+        <ServiceDetailSection key={detail.id} detail={detail} index={i} />
+      ))}
+
+      {/* Why Work With Us */}
+      <section className="py-16 sm:py-24 px-4 bg-slate-50">
+        <div className="max-w-5xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-semibold text-center mb-4 text-slate-900 tracking-tight">
+            Why Work With Us?
           </h2>
           <p className="text-slate-500 text-center mb-12 max-w-2xl mx-auto">
-            No catch. Here&apos;s how it works.
+            Not a tool. Not a template. A real growth team — built for results.
           </p>
 
           <div className="grid md:grid-cols-2 gap-8">
-            <div className="gradient-card rounded-2xl p-8 border border-emerald-100">
-              <div className="w-14 h-14 bg-emerald-100 rounded-xl flex items-center justify-center mb-4 border border-emerald-200">
-                <span className="text-3xl">🏭</span>
+            <div className="bg-white rounded-2xl p-6 sm:p-8 border border-slate-100 shadow-sm">
+              <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center mb-4">
+                <svg className="w-6 h-6 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
+                </svg>
               </div>
-              <h3 className="font-bold text-xl mb-3 text-slate-900">
-                Powered by MCP Factory
+              <h3 className="font-semibold text-lg text-slate-900 mb-2">
+                Highest Quality Execution
               </h3>
-              <p className="text-slate-600 leading-relaxed">
-                We built{" "}
-                <a
-                  href="https://github.com/shamanic-technologies/mcpfactory"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-emerald-600 hover:underline font-medium"
-                >
-                  MCP Factory
-                </a>
-                , an open-source automation platform. GrowthAgency.dev runs
-                entirely on it. Since we own the infrastructure, the platform
-                cost for us is zero.
+              <p className="text-slate-500 text-sm leading-relaxed">
+                We continuously A/B test strategies and optimize every
+                campaign. Consistent execution, maximum value per dollar spent.
               </p>
             </div>
 
-            <div className="gradient-card rounded-2xl p-8 border border-emerald-100">
-              <div className="w-14 h-14 bg-emerald-100 rounded-xl flex items-center justify-center mb-4 border border-emerald-200">
-                <span className="text-3xl">🔑</span>
+            <div className="bg-white rounded-2xl p-6 sm:p-8 border border-slate-100 shadow-sm">
+              <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center mb-4">
+                <svg className="w-6 h-6 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+                </svg>
               </div>
-              <h3 className="font-bold text-xl mb-3 text-slate-900">
-                BYOK — You Pay Only API Costs
+              <h3 className="font-semibold text-lg text-slate-900 mb-2">
+                Instant Start
               </h3>
-              <p className="text-slate-600 leading-relaxed">
-                We use free and open-source AI tools. For services that need
-                API keys (like email sending), you bring your own. You pay
-                the provider directly — typically pennies per action.
+              <p className="text-slate-500 text-sm leading-relaxed">
+                No weeks of onboarding. We start executing within hours, not
+                days. Your campaigns are live before a traditional agency
+                finishes their first meeting.
               </p>
             </div>
 
-            <div className="gradient-card rounded-2xl p-8 border border-emerald-100">
-              <div className="w-14 h-14 bg-emerald-100 rounded-xl flex items-center justify-center mb-4 border border-emerald-200">
-                <span className="text-3xl">🛠️</span>
+            <div className="bg-white rounded-2xl p-6 sm:p-8 border border-slate-100 shadow-sm">
+              <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center mb-4">
+                <svg className="w-6 h-6 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z" />
+                </svg>
               </div>
-              <h3 className="font-bold text-xl mb-3 text-slate-900">
-                100% Open Source Tools
+              <h3 className="font-semibold text-lg text-slate-900 mb-2">
+                Zero Friction Onboarding
               </h3>
-              <p className="text-slate-600 leading-relaxed">
-                Every tool we use is open source. No proprietary lock-in. You
-                can inspect, fork, and run everything yourself if you want.
+              <p className="text-slate-500 text-sm leading-relaxed">
+                We only need your brand URL and 1–2 lines about your objective.
+                That&apos;s it. No lengthy briefs, no questionnaires, no back
+                and forth.
               </p>
             </div>
 
-            <div className="gradient-card rounded-2xl p-8 border border-emerald-100">
-              <div className="w-14 h-14 bg-emerald-100 rounded-xl flex items-center justify-center mb-4 border border-emerald-200">
-                <span className="text-3xl">📈</span>
+            <div className="bg-white rounded-2xl p-6 sm:p-8 border border-slate-100 shadow-sm">
+              <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center mb-4">
+                <svg className="w-6 h-6 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
+                </svg>
               </div>
-              <h3 className="font-bold text-xl mb-3 text-slate-900">
-                We Grow by Proving It Works
+              <h3 className="font-semibold text-lg text-slate-900 mb-2">
+                Strategic Channel Mix
               </h3>
-              <p className="text-slate-600 leading-relaxed">
-                Your success is our best marketing. When your campaigns
-                deliver results, it validates the platform and brings more
-                users to MCP Factory.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* AI Search Ranking */}
-      <section id="ai-ranking" className="py-20 px-4 bg-slate-950">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-12">
-            <div className="inline-block bg-emerald-500/10 text-emerald-400 px-4 py-1.5 rounded-full text-sm font-medium mb-6 border border-emerald-500/20">
-              The Future of Discoverability
-            </div>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white">
-              Get Found by AI Search Engines
-            </h2>
-            <p className="text-slate-400 max-w-2xl mx-auto">
-              ChatGPT, Perplexity, and other AI tools are becoming the new
-              search engines. If you&apos;re not in their sources, you
-              don&apos;t exist.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-6 mb-12">
-            <div className="bg-slate-900 rounded-2xl p-6 border border-slate-800 text-center">
-              <div className="text-4xl font-bold text-emerald-400 mb-2">
-                27%
-              </div>
-              <p className="text-slate-400 text-sm">
-                of ChatGPT sources come from organic press
-              </p>
-            </div>
-            <div className="bg-slate-900 rounded-2xl p-6 border border-slate-800 text-center">
-              <div className="text-4xl font-bold text-emerald-400 mb-2">
-                49%
-              </div>
-              <p className="text-slate-400 text-sm">
-                for recent information queries
-              </p>
-            </div>
-            <div className="bg-slate-900 rounded-2xl p-6 border border-slate-800 text-center">
-              <div className="text-4xl font-bold text-emerald-400 mb-2">
-                ∞
-              </div>
-              <p className="text-slate-400 text-sm">
-                Backlinks compound forever — unlike ads
-              </p>
-            </div>
-          </div>
-
-          <div className="bg-slate-900 rounded-2xl p-8 border border-slate-800">
-            <h3 className="font-bold text-xl mb-4 text-white">
-              How It Works
-            </h3>
-            <div className="space-y-4 text-slate-400">
-              <p>
-                AI search engines like ChatGPT pull answers from published
-                articles, press mentions, and authoritative content. The more
-                your brand appears in quality publications, the more likely
-                AI recommends you.
-              </p>
-              <p>
-                We use strategic PR to get your brand mentioned in real
-                publications. Each article creates a permanent backlink that
-                boosts both your SEO ranking and your AI search visibility.
-              </p>
-              <p className="text-emerald-400 font-medium">
-                One press article = SEO boost + AI visibility + brand
-                credibility. It compounds.
+              <p className="text-slate-500 text-sm leading-relaxed">
+                We don&apos;t just run one channel. We combine outreach, PR,
+                SEO, and AI visibility into one coordinated strategy that
+                maximizes results across all fronts.
               </p>
             </div>
           </div>
@@ -311,23 +301,23 @@ export default function Home() {
       </section>
 
       {/* How It Works */}
-      <section className="py-20 px-4 bg-white">
+      <section className="py-16 sm:py-24 px-4 bg-white">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-slate-900">
+          <h2 className="text-3xl md:text-4xl font-semibold text-center mb-12 text-slate-900 tracking-tight">
             Three Steps. That&apos;s It.
           </h2>
 
           <div className="space-y-8">
             {STEPS.map((step) => (
               <div key={step.number} className="flex gap-5">
-                <div className="w-12 h-12 bg-emerald-500 text-white rounded-full flex items-center justify-center font-bold shrink-0 shadow-lg text-lg">
+                <div className="w-12 h-12 bg-slate-900 text-white rounded-full flex items-center justify-center font-bold shrink-0 text-lg">
                   {step.number}
                 </div>
                 <div>
-                  <h3 className="font-bold text-lg text-slate-900 mb-1">
+                  <h3 className="font-semibold text-lg text-slate-900 mb-1">
                     {step.title}
                   </h3>
-                  <p className="text-slate-600 leading-relaxed">
+                  <p className="text-slate-500 leading-relaxed">
                     {step.description}
                   </p>
                 </div>
@@ -338,116 +328,65 @@ export default function Home() {
       </section>
 
       {/* About */}
-      <section
-        id="about"
-        className="py-20 px-4 bg-gradient-to-b from-slate-50 to-white"
-      >
-        <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6 text-slate-900">
-            Built by Kevin Lourd
-          </h2>
-          <p className="text-slate-600 mb-6 leading-relaxed max-w-2xl mx-auto">
-            I believe marketing should be automated and cheap in the age of
-            AI. Traditional agencies charge $5K–$20K/month with no
-            guarantees. I built the tools to make that obsolete.
-          </p>
-          <p className="text-slate-600 mb-8 leading-relaxed max-w-2xl mx-auto">
-            GrowthAgency.dev runs on{" "}
-            <a
-              href="https://github.com/shamanic-technologies/mcpfactory"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-emerald-600 hover:underline font-medium"
-            >
-              MCP Factory
-            </a>{" "}
-            (open-source) and{" "}
-            <a
-              href="https://pressbeat.io"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-emerald-600 hover:underline font-medium"
-            >
-              PressBeat
-            </a>{" "}
-            (guaranteed press) — both products I built.
-          </p>
-          <a
-            href="https://www.linkedin.com/in/kevin-lourd-3394b025/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-emerald-600 hover:text-emerald-700 font-medium transition"
-          >
-            <svg
-              className="w-5 h-5"
-              fill="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-            </svg>
-            Connect on LinkedIn
-          </a>
-        </div>
-      </section>
+      <section id="about" className="py-16 sm:py-24 px-4 bg-slate-50">
+        <div className="max-w-4xl mx-auto">
+          <div className="flex flex-col md:flex-row gap-12 items-center">
+            {/* Photo placeholder — replace /public/kevin.jpg */}
+            <div className="shrink-0">
+              <div className="w-48 h-48 md:w-56 md:h-56 rounded-2xl bg-slate-200 flex items-center justify-center">
+                <span className="text-5xl md:text-6xl font-bold text-slate-400">
+                  KL
+                </span>
+              </div>
+            </div>
 
-      {/* CTA / Contact */}
-      <section id="contact" className="py-20 px-4 gradient-hero">
-        <div className="max-w-2xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white">
-            Ready to Grow?
-          </h2>
-          <p className="text-slate-400 mb-8 max-w-xl mx-auto">
-            Get started for free. No credit card, no contract, no BS. Just
-            share your URL and we&apos;ll get you set up.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a
-              href="mailto:kevin@growthagency.dev"
-              className="px-8 py-4 bg-emerald-500 text-white rounded-full hover:bg-emerald-600 font-semibold text-lg shadow-lg hover:shadow-xl transition"
-            >
-              Email Us to Start
-            </a>
-            <a
-              href="https://www.linkedin.com/in/kevin-lourd-3394b025/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-8 py-4 bg-slate-800 text-slate-300 rounded-full hover:bg-slate-700 font-medium text-lg border border-slate-700 transition"
-            >
-              Message on LinkedIn
-            </a>
+            {/* Bio */}
+            <div>
+              <h2 className="text-3xl md:text-4xl font-semibold mb-4 text-slate-900 tracking-tight">
+                Meet Kevin Lourd
+              </h2>
+              <p className="text-slate-500 mb-4 leading-relaxed">
+                I believe marketing should be smarter, faster, and
+                results-driven. Traditional agencies charge $5K–$20K/month with
+                zero guarantees. I built the tools to change that.
+              </p>
+              <p className="text-slate-500 mb-6 leading-relaxed">
+                As your dedicated strategist, I personally design your growth
+                plan and oversee every campaign. You get senior-level strategy
+                with best-in-class execution speed.
+              </p>
+              <a
+                href="https://www.linkedin.com/in/kevin-lourd-3394b025/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-slate-900 hover:text-emerald-600 font-medium transition"
+              >
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                </svg>
+                Connect on LinkedIn
+              </a>
+            </div>
           </div>
         </div>
       </section>
 
+      {/* Contact */}
+      <ContactSection />
+
       {/* Footer */}
-      <footer className="bg-slate-950 text-slate-500 py-12 px-4 border-t border-slate-800">
+      <footer className="bg-slate-900 text-slate-400 py-12 px-4 border-t border-slate-800">
         <div className="max-w-4xl mx-auto text-center">
           <div className="flex items-center justify-center gap-2 mb-4">
-            <Image src="/logo.jpg" alt="GrowthAgency.dev" width={28} height={28} className="rounded-md" />
-            <span className="font-bold text-white text-lg">
-              Growth<span className="text-emerald-400">Agency</span><span className="text-slate-400">.dev</span>
+            <span className="font-bold text-white text-lg tracking-tight">
+              Growth<span className="text-emerald-400">Agency</span>
+              <span className="text-slate-500">.dev</span>
             </span>
           </div>
           <p className="text-sm mb-6">
-            Free AI-powered growth. Built on open-source.
+            Growth with guaranteed results. Strategy + execution.
           </p>
           <div className="flex flex-wrap justify-center gap-6 text-sm mb-6">
-            <a
-              href="https://github.com/shamanic-technologies/mcpfactory"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-emerald-400 transition"
-            >
-              MCP Factory
-            </a>
-            <a
-              href="https://pressbeat.io"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-emerald-400 transition"
-            >
-              PressBeat
-            </a>
             <a
               href="https://www.linkedin.com/in/kevin-lourd-3394b025/"
               target="_blank"
@@ -455,6 +394,12 @@ export default function Home() {
               className="hover:text-emerald-400 transition"
             >
               LinkedIn
+            </a>
+            <a
+              href="mailto:kevin@growthagency.dev"
+              className="hover:text-emerald-400 transition"
+            >
+              Email
             </a>
           </div>
           <p className="text-xs text-slate-600">

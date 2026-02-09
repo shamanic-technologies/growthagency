@@ -37,11 +37,29 @@ body {
 
 @layer utilities {
   .gradient-hero {
-    background: linear-gradient(135deg, #020617 0%, #0f172a 40%, #064e3b 100%);
+    background: linear-gradient(180deg, #ffffff 0%, #f0fdf4 50%, #ffffff 100%);
+    position: relative;
+  }
+
+  .hero-glow {
+    position: relative;
+  }
+
+  .hero-glow::before {
+    content: '';
+    position: absolute;
+    width: min(800px, 100vw);
+    height: 500px;
+    background: radial-gradient(ellipse, rgba(16,185,129,0.06) 0%, transparent 70%);
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 0;
   }
 
   .gradient-text {
-    background: linear-gradient(135deg, #34d399 0%, #10b981 50%, #059669 100%);
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -52,6 +70,6 @@ body {
   }
 
   .glow {
-    box-shadow: 0 0 40px rgba(16, 185, 129, 0.15);
+    box-shadow: 0 0 30px rgba(16, 185, 129, 0.08);
   }
 }
