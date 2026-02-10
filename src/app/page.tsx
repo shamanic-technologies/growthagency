@@ -401,6 +401,12 @@ export default function Home() {
             >
               Email
             </a>
+            <a
+              href="/brand"
+              className="hover:text-emerald-400 transition"
+            >
+              Brand
+            </a>
           </div>
           <p className="text-xs text-slate-600">
             &copy; {new Date().getFullYear()} GrowthAgency.dev. All rights

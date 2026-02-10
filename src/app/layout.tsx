@@ -30,11 +30,8 @@ export const metadata: Metadata = {
   authors: [{ name: "Kevin Lourd", url: "https://www.linkedin.com/in/kevin-lourd-3394b025/" }],
   creator: "Kevin Lourd",
   icons: {
-    icon: [
-      { url: "/favicon.svg", type: "image/svg+xml" },
-      { url: "/favicon.jpg", type: "image/jpeg" },
-    ],
-    apple: "/favicon.jpg",
+    icon: { url: "/favicon.svg", type: "image/svg+xml" },
+    apple: "/favicon.svg",
   },
   openGraph: {
     type: "website",
