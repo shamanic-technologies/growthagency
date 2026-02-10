@@ -6,6 +6,30 @@ import { createPortal } from "react-dom";
 // TODO: Replace with your real WhatsApp number (with country code, no +)
 const WHATSAPP_NUMBER = "33680478702";
 
+const COUNTRY_FLAGS: [string, string][] = [
+  ["971", "\u{1F1E6}\u{1F1EA}"], ["972", "\u{1F1EE}\u{1F1F1}"], ["966", "\u{1F1F8}\u{1F1E6}"],
+  ["852", "\u{1F1ED}\u{1F1F0}"], ["358", "\u{1F1EB}\u{1F1EE}"], ["353", "\u{1F1EE}\u{1F1EA}"],
+  ["351", "\u{1F1F5}\u{1F1F9}"], ["212", "\u{1F1F2}\u{1F1E6}"], ["216", "\u{1F1F9}\u{1F1F3}"],
+  ["213", "\u{1F1E9}\u{1F1FF}"], ["86", "\u{1F1E8}\u{1F1F3}"], ["82", "\u{1F1F0}\u{1F1F7}"],
+  ["81", "\u{1F1EF}\u{1F1F5}"], ["91", "\u{1F1EE}\u{1F1F3}"], ["90", "\u{1F1F9}\u{1F1F7}"],
+  ["65", "\u{1F1F8}\u{1F1EC}"], ["61", "\u{1F1E6}\u{1F1FA}"], ["55", "\u{1F1E7}\u{1F1F7}"],
+  ["52", "\u{1F1F2}\u{1F1FD}"], ["49", "\u{1F1E9}\u{1F1EA}"], ["48", "\u{1F1F5}\u{1F1F1}"],
+  ["47", "\u{1F1F3}\u{1F1F4}"], ["46", "\u{1F1F8}\u{1F1EA}"], ["45", "\u{1F1E9}\u{1F1F0}"],
+  ["44", "\u{1F1EC}\u{1F1E7}"], ["43", "\u{1F1E6}\u{1F1F9}"], ["41", "\u{1F1E8}\u{1F1ED}"],
+  ["39", "\u{1F1EE}\u{1F1F9}"], ["34", "\u{1F1EA}\u{1F1F8}"], ["33", "\u{1F1EB}\u{1F1F7}"],
+  ["32", "\u{1F1E7}\u{1F1EA}"], ["31", "\u{1F1F3}\u{1F1F1}"], ["20", "\u{1F1EA}\u{1F1EC}"],
+  ["7", "\u{1F1F7}\u{1F1FA}"], ["1", "\u{1F1FA}\u{1F1F8}"],
+];
+
+function detectFlag(digits: string): string | null {
+  const clean = digits.replace(/\D/g, "");
+  if (!clean) return null;
+  for (const [code, flag] of COUNTRY_FLAGS) {
+    if (clean.startsWith(code)) return flag;
+  }
+  return null;
+}
+
 interface PhoneModalProps {
   serviceName: string;
   onClose: () => void;
@@ -53,12 +77,14 @@ export function PhoneModal({ serviceName, onClose }: PhoneModalProps) {
     e.preventDefault();
     if (!phone.trim()) return;
 
+    const fullPhone = `+${phone.replace(/^\+/, "")}`;
+
     setSending(true);
     try {
       await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ step: "notify", email, phone, serviceName }),
+        body: JSON.stringify({ step: "notify", email, phone: fullPhone, serviceName }),
       });
     } catch {
       // Don't block the user
@@ -66,7 +92,7 @@ export function PhoneModal({ serviceName, onClose }: PhoneModalProps) {
     setSending(false);
 
     const message = encodeURIComponent(
-      `Hi! I'm interested in "${serviceName}". My number: ${phone}`
+      `Hi! I'm interested in "${serviceName}". My number: ${fullPhone}`
     );
     window.open(
       `https://wa.me/${WHATSAPP_NUMBER}?text=${message}`,
@@ -147,15 +173,29 @@ export function PhoneModal({ serviceName, onClose }: PhoneModalProps) {
             </div>
 
             <form onSubmit={handlePhoneSubmit} className="space-y-3">
-              <input
-                type="tel"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="+1 (555) 000-0000"
-                className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition"
-                autoFocus
-                required
-              />
+              <div className="flex">
+                <span className="inline-flex items-center gap-1.5 min-w-[3.25rem] px-3 rounded-l-xl border border-r-0 border-slate-200 bg-slate-100 text-slate-500 text-sm font-medium select-none justify-center">
+                  {detectFlag(phone) && (
+                    <span
+                      key={detectFlag(phone)}
+                      className="text-base"
+                      style={{ animation: "fadeIn 0.2s ease-in-out" }}
+                    >
+                      {detectFlag(phone)}
+                    </span>
+                  )}
+                  +
+                </span>
+                <input
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="33 6 12 34 56 78"
+                  className="w-full px-4 py-3 rounded-r-xl border border-slate-200 bg-slate-50 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition"
+                  autoFocus
+                  required
+                />
+              </div>
               <button
                 type="submit"
                 disabled={!phone.trim() || sending}
