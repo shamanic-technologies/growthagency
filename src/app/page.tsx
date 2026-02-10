@@ -331,13 +331,12 @@ export default function Home() {
       <section id="about" className="py-16 sm:py-24 px-4 bg-slate-50">
         <div className="max-w-4xl mx-auto">
           <div className="flex flex-col md:flex-row gap-12 items-center">
-            {/* Photo placeholder — replace /public/kevin.jpg */}
             <div className="shrink-0">
-              <div className="w-48 h-48 md:w-56 md:h-56 rounded-2xl bg-slate-200 flex items-center justify-center">
-                <span className="text-5xl md:text-6xl font-bold text-slate-400">
-                  KL
-                </span>
-              </div>
+              <img
+                src="/kevin.jpg"
+                alt="Kevin Lourd"
+                className="w-48 h-48 md:w-56 md:h-56 rounded-2xl object-cover"
+              />
             </div>
 
             {/* Bio */}
