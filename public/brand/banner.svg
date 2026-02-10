@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" fill="none">
+  <rect width="1200" height="630" fill="white"/>
+  <rect width="1200" height="630" fill="url(#bg)" opacity="0.5"/>
+  <rect x="508" y="220" width="56" height="56" rx="14" fill="#10b981"/>
+  <text x="536" y="255" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="32" fill="white">G</text>
+  <text x="600" y="340" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="48" fill="#0f172a">Growth<tspan fill="#10b981">Agency</tspan><tspan fill="#64748b">.dev</tspan></text>
+  <text x="600" y="380" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-weight="400" font-size="20" fill="#94a3b8">Your Growth Team — Guaranteed Results</text>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="630">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="50%" stop-color="#ecfdf5"/>
+      <stop offset="100%" stop-color="#ffffff"/>
+    </linearGradient>
+  </defs>
+</svg>
