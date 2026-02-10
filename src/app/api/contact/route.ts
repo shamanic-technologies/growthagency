@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
-const EMAIL_SENDING_URL = "https://email-sending.mcpfactory.org/send";
+const EMAIL_SENDING_URL = `${process.env.EMAIL_SENDING_SERVICE_URL}/send`;
+const EMAIL_SENDING_API_KEY = process.env.EMAIL_SENDING_SERVICE_API_KEY!;
 const NOTIFY_EMAIL = "kevin@growthagency.dev";
 
 interface ContactBody {
@@ -13,7 +14,10 @@ interface ContactBody {
 async function sendEmail(payload: Record<string, unknown>) {
   const res = await fetch(EMAIL_SENDING_URL, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      "X-API-Key": EMAIL_SENDING_API_KEY,
+    },
     body: JSON.stringify(payload),
   });
   return res.json();

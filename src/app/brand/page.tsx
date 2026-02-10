@@ -9,6 +9,18 @@ export const metadata: Metadata = {
 
 const ASSETS = [
   {
+    name: "Logo Horizontal (HQ)",
+    file: "/growthagency-logo-horizontal.jpg",
+    download: "growthagency-logo-horizontal.jpg",
+    bg: "bg-slate-900",
+  },
+  {
+    name: "Logo Square (HQ)",
+    file: "/growthagency-logo-square.jpg",
+    download: "growthagency-logo-square.jpg",
+    bg: "bg-white",
+  },
+  {
     name: "Logo (on dark)",
     file: "/api/brand/logo-on-dark",
     download: "growthagency-logo-on-dark.png",
