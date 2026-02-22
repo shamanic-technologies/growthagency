@@ -19,7 +19,9 @@ async function deployEmailTemplates() {
         templates: [
           {
             name: "checkout_success",
-            subject: "Welcome to GrowthAgency — You're all set!",
+            subject: "Welcome to GrowthAgency.dev — You're all set!",
+            from: "GrowthAgency.dev <hello@growthagency.dev>",
+            messageStream: "outbound",
             htmlBody: `<!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
