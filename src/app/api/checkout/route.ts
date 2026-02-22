@@ -88,7 +88,7 @@ export async function POST(request: Request) {
       },
       custom_text: {
         submit: {
-          message: `This is not a free trial — your services start immediately. Billing is simply aligned to the 1st of the month. Your first invoice will be on ${billingDate}.`,
+          message: `This is not a free trial. Your services and billing both start on ${billingDate}.`,
         },
       },
       success_url: `${process.env.NEXT_PUBLIC_SITE_URL || "https://growthagency.dev"}/electrafrost?success=true`,
