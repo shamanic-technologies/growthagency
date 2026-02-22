@@ -176,6 +176,12 @@ describe("POST /api/checkout", () => {
           new Date("2026-03-01T00:00:00Z").getTime() / 1000,
         ),
       },
+      custom_text: {
+        submit: {
+          message:
+            "This is not a free trial — your services start immediately. Billing is simply aligned to the 1st of the month. Your first invoice will be on March 1, 2026.",
+        },
+      },
       success_url: "https://growthagency.dev/electrafrost?success=true",
       cancel_url: "https://growthagency.dev/electrafrost",
     });

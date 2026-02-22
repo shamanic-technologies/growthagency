@@ -70,6 +70,12 @@ export async function POST(request: Request) {
     }
 
     const trialEnd = calculateTrialEnd();
+    const billingDate = new Date(trialEnd * 1000).toLocaleDateString("en-US", {
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+      timeZone: "UTC",
+    });
 
     const session = await getStripe().checkout.sessions.create({
       mode: "subscription",
@@ -79,6 +85,11 @@ export async function POST(request: Request) {
       })),
       subscription_data: {
         trial_end: trialEnd,
+      },
+      custom_text: {
+        submit: {
+          message: `This is not a free trial — your services start immediately. Billing is simply aligned to the 1st of the month. Your first invoice will be on ${billingDate}.`,
+        },
       },
       success_url: `${process.env.NEXT_PUBLIC_SITE_URL || "https://growthagency.dev"}/electrafrost?success=true`,
       cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL || "https://growthagency.dev"}/electrafrost`,
