@@ -329,26 +329,10 @@ export function WelcomeCheckout({ config }: { config: ClientConfig }) {
             <strong className="gradient-text">{billingStart}</strong>.
           </p>
           <p className="text-slate-500 mb-8 leading-relaxed">
-            Your dedicated strategist will reach out shortly to kick things off.
-            In the meantime, you&apos;ll receive a confirmation email from
+            We&apos;ll be in touch very soon to get things moving.
+            You&apos;ll also receive a confirmation email from
             Stripe with a link to manage your subscription anytime.
           </p>
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-emerald-100 p-6 mb-8 glow">
-            <div className="grid grid-cols-3 gap-4">
-              <div>
-                <p className="text-2xl font-bold gradient-text">24h</p>
-                <p className="text-xs text-slate-400 mt-1">Strategist intro</p>
-              </div>
-              <div>
-                <p className="text-2xl font-bold gradient-text">1 week</p>
-                <p className="text-xs text-slate-400 mt-1">Strategy ready</p>
-              </div>
-              <div>
-                <p className="text-2xl font-bold gradient-text">2 weeks</p>
-                <p className="text-xs text-slate-400 mt-1">First results</p>
-              </div>
-            </div>
-          </div>
           <Link
             href="/"
             className="inline-flex items-center gap-2 bg-slate-900 text-white font-semibold px-6 py-3 rounded-full hover:bg-slate-800 transition"
