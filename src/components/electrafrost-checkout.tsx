@@ -218,13 +218,14 @@ export function ElectrafrostCheckout() {
 
       if (!res.ok) {
         setError(data.error || "Something went wrong.");
+        setLoading(false);
         return;
       }
 
+      // Keep loading=true — the browser will navigate to Stripe
       window.location.href = data.url;
     } catch {
       setError("Something went wrong. Please try again.");
-    } finally {
       setLoading(false);
     }
   }
