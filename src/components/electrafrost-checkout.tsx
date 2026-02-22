@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 
@@ -123,15 +123,58 @@ function formatBillingStart(): string {
   });
 }
 
+const ACCESS_PASSWORD = "expansion2026";
+const AUTH_KEY = "electrafrost-auth";
+
 export function ElectrafrostCheckout() {
   const searchParams = useSearchParams();
   const success = searchParams.get("success") === "true";
 
-  const [quantities, setQuantities] = useState<Record<string, number>>(() =>
-    Object.fromEntries(SERVICES.map((s) => [s.id, s.defaultQty])),
-  );
+  const [authenticated, setAuthenticated] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem(AUTH_KEY) === "true";
+    }
+    return false;
+  });
+  const [passwordInput, setPasswordInput] = useState("");
+  const [passwordError, setPasswordError] = useState(false);
+
+  function handleUnlock() {
+    if (passwordInput.toLowerCase().trim() === ACCESS_PASSWORD) {
+      setAuthenticated(true);
+      localStorage.setItem(AUTH_KEY, "true");
+      setPasswordError(false);
+    } else {
+      setPasswordError(true);
+    }
+  }
+
+  const STORAGE_KEY = "electrafrost-quantities";
+
+  const [quantities, setQuantities] = useState<Record<string, number>>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) return JSON.parse(saved);
+      } catch {}
+    }
+    return Object.fromEntries(SERVICES.map((s) => [s.id, s.defaultQty]));
+  });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const persistQuantities = useCallback(
+    (q: Record<string, number>) => {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(q));
+      } catch {}
+    },
+    [],
+  );
+
+  useEffect(() => {
+    persistQuantities(quantities);
+  }, [quantities, persistQuantities]);
 
   const billingStart = useMemo(() => formatBillingStart(), []);
 
@@ -197,19 +240,67 @@ export function ElectrafrostCheckout() {
 
       if (!res.ok) {
         setError(data.error || "Something went wrong.");
+        setLoading(false);
         return;
       }
 
+      // Keep loading=true — the browser will navigate to Stripe
       window.location.href = data.url;
     } catch {
       setError("Something went wrong. Please try again.");
-    } finally {
       setLoading(false);
     }
   }
 
   const coreServices = SERVICES.filter((s) => s.category === "core");
   const addonServices = SERVICES.filter((s) => s.category === "addon");
+
+  if (!authenticated && !success) {
+    return (
+      <main className="min-h-screen bg-slate-50 flex items-center justify-center px-4">
+        <div className="max-w-sm w-full text-center">
+          <h1 className="text-2xl font-bold text-slate-900 mb-2">
+            Electra Frost
+          </h1>
+          <p className="text-slate-500 text-sm mb-8">
+            Enter your access code to continue.
+          </p>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleUnlock();
+            }}
+            className="space-y-3"
+          >
+            <input
+              type="password"
+              value={passwordInput}
+              onChange={(e) => {
+                setPasswordInput(e.target.value);
+                setPasswordError(false);
+              }}
+              placeholder="Access code"
+              autoFocus
+              className={`w-full px-4 py-3 rounded-xl border bg-white text-center text-sm ${
+                passwordError
+                  ? "border-red-300 focus:ring-red-200"
+                  : "border-slate-200 focus:ring-emerald-200"
+              } focus:outline-none focus:ring-2 transition`}
+            />
+            {passwordError && (
+              <p className="text-red-500 text-xs">Incorrect access code.</p>
+            )}
+            <button
+              type="submit"
+              className="w-full bg-emerald-500 text-white font-semibold py-3 rounded-xl hover:bg-emerald-600 transition"
+            >
+              Continue
+            </button>
+          </form>
+        </div>
+      </main>
+    );
+  }
 
   if (success) {
     return (
@@ -328,7 +419,32 @@ export function ElectrafrostCheckout() {
             disabled={loading || selectedCount === 0}
             className="bg-emerald-500 text-white font-semibold px-8 py-3 rounded-xl hover:bg-emerald-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading ? "Redirecting..." : "Subscribe"}
+            {loading ? (
+              <span className="flex items-center gap-2">
+                <svg
+                  className="w-4 h-4 animate-spin"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                  />
+                </svg>
+                Redirecting...
+              </span>
+            ) : (
+              "Subscribe"
+            )}
           </button>
         </div>
       </div>
