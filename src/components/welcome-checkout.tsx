@@ -17,101 +17,18 @@ interface Service {
   exclusiveGroup?: string;
 }
 
-const SERVICES: Service[] = [
-  {
-    id: "organic-press",
-    name: "Organic Press Outreach",
-    description:
-      "Continuous journalist pitching. Each unit guarantees 1 free press opportunity per month.",
-    priceId: "price_1T3YYOGnB9wsOF5vKfXQjvsg",
-    pricePerUnit: 600,
-    priceSuffix: "/unit/mo",
-    category: "core",
-    defaultQty: 1,
-    maxQty: 10,
-  },
-  {
-    id: "expert-quoting",
-    name: "Expert Quoting (HARO + Featured)",
-    description:
-      "Daily monitoring of journalist requests. AI-generated expert quotes submitted on your behalf.",
-    priceId: "price_1T3YYPGnB9wsOF5vbWQLuyE8",
-    pricePerUnit: 600,
-    priceSuffix: "/mo",
-    category: "core",
-    defaultQty: 1,
-    maxQty: 1,
-  },
-  {
-    id: "speaking-engagements",
-    name: "Speaking Engagement Opportunities",
-    description:
-      "Conference and event speaking invitations. Each unit guarantees 1 opportunity per month.",
-    priceId: "price_1T3YZ3GnB9wsOF5vsODFmQwZ",
-    pricePerUnit: 600,
-    priceSuffix: "/unit/mo",
-    category: "core",
-    defaultQty: 1,
-    maxQty: 10,
-  },
-  {
-    id: "podcast-guest",
-    name: "Podcast Guest Opportunities",
-    description:
-      "Get booked as a guest on relevant podcasts. Each unit guarantees 1 booking per month.",
-    priceId: "price_1T3YZ7GnB9wsOF5vqNqpSbav",
-    pricePerUnit: 600,
-    priceSuffix: "/unit/mo",
-    category: "addon",
-    defaultQty: 0,
-    maxQty: 10,
-  },
-  {
-    id: "credu-leads",
-    name: "CREDU Academy Lead Generation",
-    description:
-      "30 qualified leads per pack. Cold outreach to accounting professionals worldwide.",
-    priceId: "price_1T3YZAGnB9wsOF5vtpbQgE13",
-    pricePerUnit: 600,
-    priceSuffix: "/pack of 30/mo",
-    category: "addon",
-    defaultQty: 0,
-    maxQty: 10,
-  },
-  {
-    id: "search-tracker",
-    name: "Search Visibility Tracker",
-    description:
-      "Monthly report on your Google and AI search visibility for thought leadership keywords.",
-    priceId: "price_1T3YYSGnB9wsOF5vicY71dQl",
-    pricePerUnit: 200,
-    priceSuffix: "/mo",
-    category: "addon",
-    defaultQty: 0,
-    maxQty: 1,
-    exclusiveGroup: "search-tracker",
-  },
-  {
-    id: "search-tracker-credu",
-    name: "Search Visibility + CREDU Academy",
-    description:
-      "Search visibility tracking for both your personal brand and CREDU Academy.",
-    priceId: "price_1T3YYTGnB9wsOF5vN4yIBiFW",
-    pricePerUnit: 300,
-    priceSuffix: "/mo",
-    category: "addon",
-    defaultQty: 0,
-    maxQty: 1,
-    exclusiveGroup: "search-tracker",
-  },
-];
+export interface ClientConfig {
+  uid: string;
+  password: string;
+  displayName: string;
+  services: Service[];
+}
 
 function formatBillingStart(): string {
   const now = new Date();
   const target = new Date(
     Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 1),
   );
-  // If less than 2 days away, push to month after
   if (target.getTime() - now.getTime() < 48 * 3600 * 1000) {
     target.setUTCMonth(target.getUTCMonth() + 1);
   }
@@ -123,12 +40,12 @@ function formatBillingStart(): string {
   });
 }
 
-const ACCESS_PASSWORD = "expansion2026";
-const AUTH_KEY = "electrafrost-auth";
-
-export function ElectrafrostCheckout() {
+export function WelcomeCheckout({ config }: { config: ClientConfig }) {
   const searchParams = useSearchParams();
   const success = searchParams.get("success") === "true";
+
+  const AUTH_KEY = `welcome-auth-${config.uid}`;
+  const STORAGE_KEY = `welcome-quantities-${config.uid}`;
 
   const [authenticated, setAuthenticated] = useState(() => {
     if (typeof window !== "undefined") {
@@ -140,7 +57,7 @@ export function ElectrafrostCheckout() {
   const [passwordError, setPasswordError] = useState(false);
 
   function handleUnlock() {
-    if (passwordInput.toLowerCase().trim() === ACCESS_PASSWORD) {
+    if (passwordInput.toLowerCase().trim() === config.password) {
       setAuthenticated(true);
       localStorage.setItem(AUTH_KEY, "true");
       setPasswordError(false);
@@ -149,8 +66,6 @@ export function ElectrafrostCheckout() {
     }
   }
 
-  const STORAGE_KEY = "electrafrost-quantities";
-
   const [quantities, setQuantities] = useState<Record<string, number>>(() => {
     if (typeof window !== "undefined") {
       try {
@@ -158,7 +73,7 @@ export function ElectrafrostCheckout() {
         if (saved) return JSON.parse(saved);
       } catch {}
     }
-    return Object.fromEntries(SERVICES.map((s) => [s.id, s.defaultQty]));
+    return Object.fromEntries(config.services.map((s) => [s.id, s.defaultQty]));
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -169,7 +84,7 @@ export function ElectrafrostCheckout() {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(q));
       } catch {}
     },
-    [],
+    [STORAGE_KEY],
   );
 
   useEffect(() => {
@@ -180,20 +95,20 @@ export function ElectrafrostCheckout() {
 
   const total = useMemo(
     () =>
-      SERVICES.reduce(
+      config.services.reduce(
         (sum, s) => sum + (quantities[s.id] ?? 0) * s.pricePerUnit,
         0,
       ),
-    [quantities],
+    [quantities, config.services],
   );
 
   const selectedCount = useMemo(
-    () => SERVICES.filter((s) => (quantities[s.id] ?? 0) > 0).length,
-    [quantities],
+    () => config.services.filter((s) => (quantities[s.id] ?? 0) > 0).length,
+    [quantities, config.services],
   );
 
   function setQty(id: string, qty: number) {
-    const service = SERVICES.find((s) => s.id === id);
+    const service = config.services.find((s) => s.id === id);
     if (!service) return;
 
     const clamped = Math.max(0, Math.min(qty, service.maxQty));
@@ -201,13 +116,9 @@ export function ElectrafrostCheckout() {
     setQuantities((prev) => {
       const next = { ...prev, [id]: clamped };
 
-      // Handle mutual exclusivity
       if (service.exclusiveGroup && clamped > 0) {
-        for (const s of SERVICES) {
-          if (
-            s.exclusiveGroup === service.exclusiveGroup &&
-            s.id !== id
-          ) {
+        for (const s of config.services) {
+          if (s.exclusiveGroup === service.exclusiveGroup && s.id !== id) {
             next[s.id] = 0;
           }
         }
@@ -218,9 +129,9 @@ export function ElectrafrostCheckout() {
   }
 
   async function handleSubscribe() {
-    const lineItems = SERVICES.filter((s) => (quantities[s.id] ?? 0) > 0).map(
-      (s) => ({ priceId: s.priceId, quantity: quantities[s.id] }),
-    );
+    const lineItems = config.services
+      .filter((s) => (quantities[s.id] ?? 0) > 0)
+      .map((s) => ({ priceId: s.priceId, quantity: quantities[s.id] }));
 
     if (lineItems.length === 0) {
       setError("Please select at least one service.");
@@ -234,7 +145,7 @@ export function ElectrafrostCheckout() {
       const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ lineItems }),
+        body: JSON.stringify({ lineItems, uid: config.uid }),
       });
       const data = await res.json();
 
@@ -244,7 +155,6 @@ export function ElectrafrostCheckout() {
         return;
       }
 
-      // Keep loading=true — the browser will navigate to Stripe
       window.location.href = data.url;
     } catch {
       setError("Something went wrong. Please try again.");
@@ -252,16 +162,14 @@ export function ElectrafrostCheckout() {
     }
   }
 
-  const coreServices = SERVICES.filter((s) => s.category === "core");
-  const addonServices = SERVICES.filter((s) => s.category === "addon");
+  const coreServices = config.services.filter((s) => s.category === "core");
+  const addonServices = config.services.filter((s) => s.category === "addon");
 
   if (!authenticated && !success) {
     return (
       <main className="min-h-screen bg-slate-50 flex items-center justify-center px-4">
         <div className="max-w-sm w-full text-center">
-          <h1 className="text-2xl font-bold text-slate-900 mb-2">
-            Electra Frost
-          </h1>
+          <h1 className="text-2xl font-bold text-slate-900 mb-2">Welcome</h1>
           <p className="text-slate-500 text-sm mb-8">
             Enter your access code to continue.
           </p>
@@ -354,7 +262,7 @@ export function ElectrafrostCheckout() {
         </Link>
 
         <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight mb-2">
-          Electra Frost
+          {config.displayName}
         </h1>
         <p className="text-slate-500 mb-1">
           Select your services below. Adjust quantities as needed.
@@ -381,20 +289,26 @@ export function ElectrafrostCheckout() {
         </div>
 
         {/* Add-ons */}
-        <h2 className="text-lg font-semibold text-slate-900 mb-1">Add-ons</h2>
-        <p className="text-sm text-slate-400 mb-4">
-          Optional services you can add now or later from your portal.
-        </p>
-        <div className="space-y-3 mb-10">
-          {addonServices.map((service) => (
-            <ServiceRow
-              key={service.id}
-              service={service}
-              qty={quantities[service.id] ?? 0}
-              onQtyChange={(qty) => setQty(service.id, qty)}
-            />
-          ))}
-        </div>
+        {addonServices.length > 0 && (
+          <>
+            <h2 className="text-lg font-semibold text-slate-900 mb-1">
+              Add-ons
+            </h2>
+            <p className="text-sm text-slate-400 mb-4">
+              Optional services you can add now or later from your portal.
+            </p>
+            <div className="space-y-3 mb-10">
+              {addonServices.map((service) => (
+                <ServiceRow
+                  key={service.id}
+                  service={service}
+                  qty={quantities[service.id] ?? 0}
+                  onQtyChange={(qty) => setQty(service.id, qty)}
+                />
+              ))}
+            </div>
+          </>
+        )}
 
         {/* Error */}
         {error && (

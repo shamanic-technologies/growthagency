@@ -158,6 +158,7 @@ describe("POST /api/checkout", () => {
           { priceId: "price_1T3YYOGnB9wsOF5vKfXQjvsg", quantity: 2 },
           { priceId: "price_1T3YYPGnB9wsOF5vbWQLuyE8", quantity: 1 },
         ],
+        uid: "test-uid",
       }),
     );
 
@@ -182,8 +183,8 @@ describe("POST /api/checkout", () => {
             "This is not a free trial. Your services and billing both start on March 1, 2026.",
         },
       },
-      success_url: "https://growthagency.dev/electrafrost?success=true",
-      cancel_url: "https://growthagency.dev/electrafrost",
+      success_url: "https://growthagency.dev/welcome?uid=test-uid&success=true",
+      cancel_url: "https://growthagency.dev/welcome?uid=test-uid",
     });
 
     vi.useRealTimers();

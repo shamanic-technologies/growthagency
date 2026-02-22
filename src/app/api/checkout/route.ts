@@ -20,6 +20,11 @@ interface LineItem {
   quantity: number;
 }
 
+interface CheckoutBody {
+  lineItems: LineItem[];
+  uid?: string;
+}
+
 export function calculateTrialEnd(): number {
   const now = new Date();
   const nowUnix = Math.floor(now.getTime() / 1000);
@@ -41,7 +46,7 @@ export function calculateTrialEnd(): number {
 
 export async function POST(request: Request) {
   try {
-    const { lineItems } = (await request.json()) as { lineItems: LineItem[] };
+    const { lineItems, uid } = (await request.json()) as CheckoutBody;
 
     if (!Array.isArray(lineItems) || lineItems.length === 0) {
       return NextResponse.json(
@@ -91,8 +96,8 @@ export async function POST(request: Request) {
           message: `This is not a free trial. Your services and billing both start on ${billingDate}.`,
         },
       },
-      success_url: `${process.env.NEXT_PUBLIC_SITE_URL || "https://growthagency.dev"}/electrafrost?success=true`,
-      cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL || "https://growthagency.dev"}/electrafrost`,
+      success_url: `${process.env.NEXT_PUBLIC_SITE_URL || "https://growthagency.dev"}/welcome?uid=${encodeURIComponent(uid || "")}&success=true`,
+      cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL || "https://growthagency.dev"}/welcome?uid=${encodeURIComponent(uid || "")}`,
     });
 
     return NextResponse.json({ url: session.url });
