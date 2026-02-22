@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 
@@ -127,11 +127,32 @@ export function ElectrafrostCheckout() {
   const searchParams = useSearchParams();
   const success = searchParams.get("success") === "true";
 
-  const [quantities, setQuantities] = useState<Record<string, number>>(() =>
-    Object.fromEntries(SERVICES.map((s) => [s.id, s.defaultQty])),
-  );
+  const STORAGE_KEY = "electrafrost-quantities";
+
+  const [quantities, setQuantities] = useState<Record<string, number>>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) return JSON.parse(saved);
+      } catch {}
+    }
+    return Object.fromEntries(SERVICES.map((s) => [s.id, s.defaultQty]));
+  });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const persistQuantities = useCallback(
+    (q: Record<string, number>) => {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(q));
+      } catch {}
+    },
+    [],
+  );
+
+  useEffect(() => {
+    persistQuantities(quantities);
+  }, [quantities, persistQuantities]);
 
   const billingStart = useMemo(() => formatBillingStart(), []);
 
