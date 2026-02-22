@@ -123,9 +123,31 @@ function formatBillingStart(): string {
   });
 }
 
+const ACCESS_PASSWORD = "expansion2026";
+const AUTH_KEY = "electrafrost-auth";
+
 export function ElectrafrostCheckout() {
   const searchParams = useSearchParams();
   const success = searchParams.get("success") === "true";
+
+  const [authenticated, setAuthenticated] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem(AUTH_KEY) === "true";
+    }
+    return false;
+  });
+  const [passwordInput, setPasswordInput] = useState("");
+  const [passwordError, setPasswordError] = useState(false);
+
+  function handleUnlock() {
+    if (passwordInput.toLowerCase().trim() === ACCESS_PASSWORD) {
+      setAuthenticated(true);
+      localStorage.setItem(AUTH_KEY, "true");
+      setPasswordError(false);
+    } else {
+      setPasswordError(true);
+    }
+  }
 
   const STORAGE_KEY = "electrafrost-quantities";
 
@@ -232,6 +254,53 @@ export function ElectrafrostCheckout() {
 
   const coreServices = SERVICES.filter((s) => s.category === "core");
   const addonServices = SERVICES.filter((s) => s.category === "addon");
+
+  if (!authenticated && !success) {
+    return (
+      <main className="min-h-screen bg-slate-50 flex items-center justify-center px-4">
+        <div className="max-w-sm w-full text-center">
+          <h1 className="text-2xl font-bold text-slate-900 mb-2">
+            Electra Frost
+          </h1>
+          <p className="text-slate-500 text-sm mb-8">
+            Enter your access code to continue.
+          </p>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleUnlock();
+            }}
+            className="space-y-3"
+          >
+            <input
+              type="password"
+              value={passwordInput}
+              onChange={(e) => {
+                setPasswordInput(e.target.value);
+                setPasswordError(false);
+              }}
+              placeholder="Access code"
+              autoFocus
+              className={`w-full px-4 py-3 rounded-xl border bg-white text-center text-sm ${
+                passwordError
+                  ? "border-red-300 focus:ring-red-200"
+                  : "border-slate-200 focus:ring-emerald-200"
+              } focus:outline-none focus:ring-2 transition`}
+            />
+            {passwordError && (
+              <p className="text-red-500 text-xs">Incorrect access code.</p>
+            )}
+            <button
+              type="submit"
+              className="w-full bg-emerald-500 text-white font-semibold py-3 rounded-xl hover:bg-emerald-600 transition"
+            >
+              Continue
+            </button>
+          </form>
+        </div>
+      </main>
+    );
+  }
 
   if (success) {
     return (
