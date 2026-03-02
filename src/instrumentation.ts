@@ -1,5 +1,38 @@
 import { distributeFetch } from "@/lib/distribute";
 
+const PROVIDER_KEYS = [
+  { provider: "postmark", envVar: "POSTMARK_API_KEY" },
+  { provider: "stripe", envVar: "STRIPE_SECRET_KEY" },
+] as const;
+
+async function registerProviderKeys() {
+  for (const { provider, envVar } of PROVIDER_KEYS) {
+    const apiKey = process.env[envVar];
+    if (!apiKey) {
+      console.warn(`[instrumentation] Missing ${envVar}, skipping ${provider} key registration`);
+      continue;
+    }
+
+    try {
+      const res = await distributeFetch("/v1/keys", {
+        method: "POST",
+        body: { keySource: "org", provider, apiKey },
+      });
+
+      if (!res) return;
+
+      if (!res.ok) {
+        const body = await res.text();
+        console.error(`[instrumentation] ${provider} key registration failed:`, res.status, body);
+      } else {
+        console.log(`[instrumentation] ${provider} key registered`);
+      }
+    } catch (err) {
+      console.error(`[instrumentation] ${provider} key registration error:`, err);
+    }
+  }
+}
+
 async function deployEmailTemplates() {
   try {
     const res = await distributeFetch("/v1/emails/templates", {
@@ -129,6 +162,7 @@ Manage your subscription: {{portalUrl}}
 
 export async function register() {
   if (process.env.NEXT_RUNTIME === "nodejs") {
+    await registerProviderKeys();
     await deployEmailTemplates();
   }
 }
