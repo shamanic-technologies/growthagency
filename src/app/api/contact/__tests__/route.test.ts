@@ -15,6 +15,7 @@ function makeRequest(body: unknown): Request {
 describe("POST /api/contact", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.stubEnv("NEXT_PUBLIC_DISTRIBUTE_API_URL", "https://api.test");
     vi.stubEnv("DISTRIBUTE_API_KEY", "distrib.app_test");
     mockFetch.mockResolvedValue({ ok: true, json: () => Promise.resolve({}) });
   });
@@ -52,7 +53,7 @@ describe("POST /api/contact", () => {
 
     // Welcome email to the lead
     expect(mockFetch).toHaveBeenCalledWith(
-      "https://api.distribute.you/v1/emails/send",
+      "https://api.test/v1/emails/send",
       expect.objectContaining({
         method: "POST",
         headers: {
@@ -69,7 +70,7 @@ describe("POST /api/contact", () => {
 
     // Notification to Kevin
     expect(mockFetch).toHaveBeenCalledWith(
-      "https://api.distribute.you/v1/emails/send",
+      "https://api.test/v1/emails/send",
       expect.objectContaining({
         method: "POST",
         body: JSON.stringify({
@@ -110,7 +111,7 @@ describe("POST /api/contact", () => {
 
     expect(mockFetch).toHaveBeenCalledTimes(1);
     expect(mockFetch).toHaveBeenCalledWith(
-      "https://api.distribute.you/v1/emails/send",
+      "https://api.test/v1/emails/send",
       expect.objectContaining({
         method: "POST",
         body: JSON.stringify({
