@@ -8,6 +8,7 @@ describe("instrumentation register()", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.stubEnv("NEXT_RUNTIME", "nodejs");
+    vi.stubEnv("NEXT_PUBLIC_DISTRIBUTE_API_URL", "https://api.test");
     vi.stubEnv("DISTRIBUTE_API_KEY", "distrib.app_test");
     vi.stubEnv("POSTMARK_API_KEY", "pm_test_key");
     vi.stubEnv("STRIPE_SECRET_KEY", "sk_test_stripe");
@@ -22,7 +23,7 @@ describe("instrumentation register()", () => {
     expect(calls.length).toBe(3);
 
     // First call: postmark key
-    expect(calls[0][0]).toBe("https://api.distribute.you/v1/keys");
+    expect(calls[0][0]).toBe("https://api.test/v1/keys");
     expect(JSON.parse(calls[0][1].body)).toEqual({
       keySource: "org",
       provider: "postmark",
@@ -30,7 +31,7 @@ describe("instrumentation register()", () => {
     });
 
     // Second call: stripe key
-    expect(calls[1][0]).toBe("https://api.distribute.you/v1/keys");
+    expect(calls[1][0]).toBe("https://api.test/v1/keys");
     expect(JSON.parse(calls[1][1].body)).toEqual({
       keySource: "org",
       provider: "stripe",
@@ -39,7 +40,7 @@ describe("instrumentation register()", () => {
 
     // Third call: template deploy
     expect(calls[2][0]).toBe(
-      "https://api.distribute.you/v1/emails/templates",
+      "https://api.test/v1/emails/templates",
     );
     expect(calls[2][1].method).toBe("PUT");
   });
@@ -53,7 +54,7 @@ describe("instrumentation register()", () => {
     // Only template deploy call
     expect(mockFetch).toHaveBeenCalledTimes(1);
     expect(mockFetch.mock.calls[0][0]).toBe(
-      "https://api.distribute.you/v1/emails/templates",
+      "https://api.test/v1/emails/templates",
     );
   });
 
@@ -75,7 +76,7 @@ describe("instrumentation register()", () => {
 
     expect(mockFetch).toHaveBeenCalledTimes(3);
     expect(mockFetch.mock.calls[2][0]).toBe(
-      "https://api.distribute.you/v1/emails/templates",
+      "https://api.test/v1/emails/templates",
     );
   });
 

@@ -34,6 +34,7 @@ describe("POST /api/webhooks/stripe", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.stubEnv("STRIPE_WEBHOOK_SECRET", "whsec_test");
+    vi.stubEnv("NEXT_PUBLIC_DISTRIBUTE_API_URL", "https://api.test");
     vi.stubEnv("DISTRIBUTE_API_KEY", "distrib.app_test");
     vi.stubEnv("NEXT_PUBLIC_SITE_URL", "https://growthagency.dev");
     mockFetch.mockResolvedValue({ ok: true, text: () => Promise.resolve("") });
@@ -102,7 +103,7 @@ describe("POST /api/webhooks/stripe", () => {
     });
 
     expect(mockFetch).toHaveBeenCalledWith(
-      "https://api.distribute.you/v1/emails/send",
+      "https://api.test/v1/emails/send",
       expect.objectContaining({
         method: "POST",
         headers: {
