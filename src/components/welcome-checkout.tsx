@@ -109,6 +109,7 @@ interface Service {
   defaultQty: number;
   maxQty: number;
   exclusiveGroup?: string;
+  badge?: string;
 }
 
 export interface ClientConfig {
@@ -520,7 +521,12 @@ function ServiceRow({
             >
               {service.name}
             </h3>
-            {service.exclusiveGroup && (
+            {service.badge && (
+              <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded">
+                {service.badge}
+              </span>
+            )}
+            {service.exclusiveGroup && !service.badge && (
               <span className="text-[10px] text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">
                 pick one
               </span>
