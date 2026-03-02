@@ -126,6 +126,15 @@ function isOfferExpired(): boolean {
   return now >= deadline;
 }
 
+function formatToday(): string {
+  return new Date().toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+}
+
 function formatBillingStart(): string {
   const now = new Date();
   const target = new Date(now.getTime() + 14 * 24 * 3600 * 1000);
@@ -190,6 +199,7 @@ export function WelcomeCheckout({ config }: { config: ClientConfig }) {
 
   const billingStart = useMemo(() => formatBillingStart(), []);
   const offerExpired = useMemo(() => isOfferExpired(), []);
+  const todayFormatted = useMemo(() => formatToday(), []);
 
   const total = useMemo(
     () =>
@@ -388,9 +398,14 @@ export function WelcomeCheckout({ config }: { config: ClientConfig }) {
           &larr; Back to site
         </Link>
 
-        <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight mb-2">
-          {config.displayName}
-        </h1>
+        <div className="flex items-center gap-3 mb-2 flex-wrap">
+          <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight">
+            {config.displayName}
+          </h1>
+          <span className="text-xs font-semibold text-amber-700 bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-full whitespace-nowrap">
+            Offer valid until {todayFormatted}
+          </span>
+        </div>
         <p className="text-slate-500 mb-1">
           Select your services below. Adjust quantities as needed.
         </p>
