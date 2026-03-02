@@ -25,28 +25,28 @@ interface CheckoutBody {
   uid?: string;
 }
 
+export function isOfferExpired(): boolean {
+  const now = new Date();
+  const deadline = new Date(Date.UTC(2026, 2, 16, 0, 0, 0)); // March 16, 2026 00:00 UTC
+  return now >= deadline;
+}
+
 export function calculateTrialEnd(): number {
   const now = new Date();
-  const nowUnix = Math.floor(now.getTime() / 1000);
-  const year = now.getUTCFullYear();
-  const month = now.getUTCMonth();
-
-  let target = new Date(Date.UTC(year, month + 1, 1, 0, 0, 0));
-  let trialEnd = Math.floor(target.getTime() / 1000);
-
-  // Stripe requires trial_end to be at least 48h in the future
-  const MIN_TRIAL_SECONDS = 48 * 60 * 60;
-  if (trialEnd - nowUnix < MIN_TRIAL_SECONDS) {
-    target = new Date(Date.UTC(year, month + 2, 1, 0, 0, 0));
-    trialEnd = Math.floor(target.getTime() / 1000);
-  }
-
-  return trialEnd;
+  const target = new Date(now.getTime() + 14 * 24 * 3600 * 1000);
+  return Math.floor(target.getTime() / 1000);
 }
 
 export async function POST(request: Request) {
   try {
     const { lineItems, uid } = (await request.json()) as CheckoutBody;
+
+    if (isOfferExpired()) {
+      return NextResponse.json(
+        { error: "This offer has expired. Please contact us for current pricing." },
+        { status: 403 },
+      );
+    }
 
     if (!Array.isArray(lineItems) || lineItems.length === 0) {
       return NextResponse.json(

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { calculateTrialEnd, POST } from "../route";
+import { calculateTrialEnd, isOfferExpired, POST } from "../route";
 
 // Mock Stripe
 const { mockCreate } = vi.hoisted(() => ({
@@ -23,61 +23,72 @@ function makeRequest(body: unknown): Request {
 }
 
 describe("calculateTrialEnd", () => {
-  it("returns the 1st of next month for mid-month dates", () => {
+  it("returns now + 14 days", () => {
     vi.useFakeTimers();
-    // Feb 22, 2026 12:00 UTC
-    vi.setSystemTime(new Date("2026-02-22T12:00:00Z"));
+    vi.setSystemTime(new Date("2026-03-02T12:00:00Z"));
 
     const result = calculateTrialEnd();
-    // March 1, 2026 00:00 UTC
-    expect(result).toBe(Math.floor(new Date("2026-03-01T00:00:00Z").getTime() / 1000));
+    const expected = Math.floor(
+      new Date("2026-03-16T12:00:00Z").getTime() / 1000,
+    );
+    expect(result).toBe(expected);
 
     vi.useRealTimers();
   });
 
-  it("returns the 1st of next month for early-month dates", () => {
+  it("returns now + 14 days for end of month", () => {
     vi.useFakeTimers();
-    vi.setSystemTime(new Date("2026-03-07T10:00:00Z"));
+    vi.setSystemTime(new Date("2026-02-20T10:00:00Z"));
 
     const result = calculateTrialEnd();
-    // April 1, 2026
-    expect(result).toBe(Math.floor(new Date("2026-04-01T00:00:00Z").getTime() / 1000));
+    const expected = Math.floor(
+      new Date("2026-03-06T10:00:00Z").getTime() / 1000,
+    );
+    expect(result).toBe(expected);
 
     vi.useRealTimers();
   });
 
-  it("handles December -> January year rollover", () => {
+  it("handles year boundary", () => {
     vi.useFakeTimers();
-    vi.setSystemTime(new Date("2026-12-15T10:00:00Z"));
+    vi.setSystemTime(new Date("2026-12-25T10:00:00Z"));
 
     const result = calculateTrialEnd();
-    // January 1, 2027
-    expect(result).toBe(Math.floor(new Date("2027-01-01T00:00:00Z").getTime() / 1000));
+    const expected = Math.floor(
+      new Date("2027-01-08T10:00:00Z").getTime() / 1000,
+    );
+    expect(result).toBe(expected);
 
     vi.useRealTimers();
   });
+});
 
-  it("pushes to month after next when 1st is < 48h away", () => {
+describe("isOfferExpired", () => {
+  it("returns false on March 15, 2026", () => {
     vi.useFakeTimers();
-    // Feb 28, 2026 23:00 UTC — March 1 is only 1 hour away
-    vi.setSystemTime(new Date("2026-02-28T23:00:00Z"));
-
-    const result = calculateTrialEnd();
-    // Should push to April 1, 2026 (not March 1)
-    expect(result).toBe(Math.floor(new Date("2026-04-01T00:00:00Z").getTime() / 1000));
-
+    vi.setSystemTime(new Date("2026-03-15T23:59:59Z"));
+    expect(isOfferExpired()).toBe(false);
     vi.useRealTimers();
   });
 
-  it("keeps next month when 1st is exactly 48h away", () => {
+  it("returns true on March 16, 2026", () => {
     vi.useFakeTimers();
-    // Feb 27, 2026 00:00 UTC — March 1 is exactly 48h away (2 days in Feb non-leap year has 28 days)
-    vi.setSystemTime(new Date("2026-02-27T00:00:00Z"));
+    vi.setSystemTime(new Date("2026-03-16T00:00:00Z"));
+    expect(isOfferExpired()).toBe(true);
+    vi.useRealTimers();
+  });
 
-    const result = calculateTrialEnd();
-    // March 1 is exactly 48h away, so it should still be March 1
-    expect(result).toBe(Math.floor(new Date("2026-03-01T00:00:00Z").getTime() / 1000));
+  it("returns false on March 1, 2026", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-03-01T10:00:00Z"));
+    expect(isOfferExpired()).toBe(false);
+    vi.useRealTimers();
+  });
 
+  it("returns true in April 2026", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-04-01T10:00:00Z"));
+    expect(isOfferExpired()).toBe(true);
     vi.useRealTimers();
   });
 });
@@ -88,28 +99,64 @@ describe("POST /api/checkout", () => {
     mockCreate.mockResolvedValue({ url: "https://checkout.stripe.com/test" });
   });
 
+  it("returns 403 when offer is expired", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-03-16T00:00:00Z"));
+
+    const res = await POST(
+      makeRequest({
+        lineItems: [
+          { priceId: "price_1T3YYOGnB9wsOF5vKfXQjvsg", quantity: 1 },
+        ],
+      }),
+    );
+    expect(res.status).toBe(403);
+    const body = await res.json();
+    expect(body.error).toContain("expired");
+
+    vi.useRealTimers();
+  });
+
   it("returns 400 for empty lineItems", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-03-10T12:00:00Z"));
+
     const res = await POST(makeRequest({ lineItems: [] }));
     expect(res.status).toBe(400);
     const body = await res.json();
     expect(body.error).toBe("No services selected");
+
+    vi.useRealTimers();
   });
 
   it("returns 400 for missing lineItems", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-03-10T12:00:00Z"));
+
     const res = await POST(makeRequest({}));
     expect(res.status).toBe(400);
+
+    vi.useRealTimers();
   });
 
   it("returns 400 for invalid priceId", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-03-10T12:00:00Z"));
+
     const res = await POST(
       makeRequest({ lineItems: [{ priceId: "price_fake", quantity: 1 }] }),
     );
     expect(res.status).toBe(400);
     const body = await res.json();
     expect(body.error).toBe("Invalid price ID");
+
+    vi.useRealTimers();
   });
 
   it("returns 400 for quantity 0", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-03-10T12:00:00Z"));
+
     const res = await POST(
       makeRequest({
         lineItems: [
@@ -120,9 +167,14 @@ describe("POST /api/checkout", () => {
     expect(res.status).toBe(400);
     const body = await res.json();
     expect(body.error).toBe("Invalid quantity");
+
+    vi.useRealTimers();
   });
 
   it("returns 400 for quantity > 10", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-03-10T12:00:00Z"));
+
     const res = await POST(
       makeRequest({
         lineItems: [
@@ -133,9 +185,14 @@ describe("POST /api/checkout", () => {
     expect(res.status).toBe(400);
     const body = await res.json();
     expect(body.error).toBe("Invalid quantity");
+
+    vi.useRealTimers();
   });
 
   it("returns 400 for non-integer quantity", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-03-10T12:00:00Z"));
+
     const res = await POST(
       makeRequest({
         lineItems: [
@@ -146,11 +203,18 @@ describe("POST /api/checkout", () => {
     expect(res.status).toBe(400);
     const body = await res.json();
     expect(body.error).toBe("Invalid quantity");
+
+    vi.useRealTimers();
   });
 
   it("creates a Stripe session with correct params for valid input", async () => {
     vi.useFakeTimers();
-    vi.setSystemTime(new Date("2026-02-22T12:00:00Z"));
+    vi.setSystemTime(new Date("2026-03-02T12:00:00Z"));
+
+    const trialEnd = Math.floor(
+      new Date("2026-03-16T12:00:00Z").getTime() / 1000,
+    );
+    const billingDate = "March 16, 2026";
 
     const res = await POST(
       makeRequest({
@@ -173,14 +237,11 @@ describe("POST /api/checkout", () => {
         { price: "price_1T3YYPGnB9wsOF5vbWQLuyE8", quantity: 1 },
       ],
       subscription_data: {
-        trial_end: Math.floor(
-          new Date("2026-03-01T00:00:00Z").getTime() / 1000,
-        ),
+        trial_end: trialEnd,
       },
       custom_text: {
         submit: {
-          message:
-            "This is not a free trial. Your services and billing both start on March 1, 2026.",
+          message: `This is not a free trial. Your services and billing both start on ${billingDate}.`,
         },
       },
       success_url: "https://growthagency.dev/welcome?uid=test-uid&success=true",

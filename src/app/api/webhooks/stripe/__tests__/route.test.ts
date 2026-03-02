@@ -115,7 +115,7 @@ describe("POST /api/webhooks/stripe", () => {
           eventType: "checkout_success",
           recipientEmail: "electra@example.com",
           metadata: {
-            billingDate: "March 1, 2026",
+            billingDate: "March 8, 2026",
             portalUrl: "https://billing.stripe.com/portal/sess_test",
           },
         }),
