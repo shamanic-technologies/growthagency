@@ -118,14 +118,16 @@ export interface ClientConfig {
   services: Service[];
 }
 
+function isOfferExpired(): boolean {
+  const now = new Date();
+  // Offer valid through March 15, 2026 (inclusive). Expired from March 16 onwards.
+  const deadline = new Date(Date.UTC(2026, 2, 16, 0, 0, 0)); // March 16, 2026 00:00 UTC
+  return now >= deadline;
+}
+
 function formatBillingStart(): string {
   const now = new Date();
-  const target = new Date(
-    Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 1),
-  );
-  if (target.getTime() - now.getTime() < 48 * 3600 * 1000) {
-    target.setUTCMonth(target.getUTCMonth() + 1);
-  }
+  const target = new Date(now.getTime() + 14 * 24 * 3600 * 1000);
   return target.toLocaleDateString("en-US", {
     month: "long",
     day: "numeric",
@@ -186,6 +188,7 @@ export function WelcomeCheckout({ config }: { config: ClientConfig }) {
   }, [quantities, persistQuantities]);
 
   const billingStart = useMemo(() => formatBillingStart(), []);
+  const offerExpired = useMemo(() => isOfferExpired(), []);
 
   const total = useMemo(
     () =>
@@ -339,6 +342,36 @@ export function WelcomeCheckout({ config }: { config: ClientConfig }) {
           >
             <span>&larr;</span> Back to GrowthAgency.dev
           </Link>
+        </div>
+      </main>
+    );
+  }
+
+  if (offerExpired) {
+    return (
+      <main className="min-h-screen gradient-hero flex items-center justify-center px-4">
+        <div className="max-w-md w-full text-center">
+          <div className="mb-6">
+            <span className="text-4xl">⏰</span>
+          </div>
+          <h1 className="text-3xl font-bold text-slate-900 mb-4 tracking-tight">
+            This offer has expired
+          </h1>
+          <p className="text-slate-600 mb-3 leading-relaxed">
+            Our March pricing was a limited-time promotion. Starting in April, our rates will increase.
+          </p>
+          <p className="text-slate-500 mb-8 leading-relaxed">
+            Please reach out so we can discuss your options and find the best plan for you.
+          </p>
+          <a
+            href="mailto:hello@growthagency.dev"
+            className="inline-flex items-center gap-2 bg-slate-900 text-white font-semibold px-6 py-3 rounded-full hover:bg-slate-800 transition"
+          >
+            Contact us
+          </a>
+          <p className="text-slate-300 text-xs mt-8">
+            Growth<span className="gradient-text font-semibold">Agency</span>.dev
+          </p>
         </div>
       </main>
     );

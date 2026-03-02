@@ -68,9 +68,9 @@ const CLIENTS: Record<string, ClientConfig> = {
       },
       {
         id: "search-tracker",
-        name: "Search Tracker",
+        name: "SEO Tracker",
         description:
-          "Monthly tracking of search visibility and brand mentions.",
+          "Track your search visibility and brand mentions across up to 3 domains.",
         priceId: "price_1T3YYSGnB9wsOF5vicY71dQl",
         pricePerUnit: 200,
         priceSuffix: "/mo",
@@ -81,9 +81,9 @@ const CLIENTS: Record<string, ClientConfig> = {
       },
       {
         id: "search-tracker-credu",
-        name: "Search Tracker + CREDU",
+        name: "GEO Tracker",
         description:
-          "Combined search tracking and credibility-driven lead generation.",
+          "AI Search tracking across up to 3 domains — includes SEO Tracker for free.",
         priceId: "price_1T3YYTGnB9wsOF5vN4yIBiFW",
         pricePerUnit: 300,
         priceSuffix: "/mo",
