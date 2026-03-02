@@ -11,8 +11,8 @@ const VALID_PRICE_IDS = new Set([
   "price_1T3YZ3GnB9wsOF5vsODFmQwZ", // Speaking Events
   "price_1T3YZ7GnB9wsOF5vqNqpSbav", // Podcast Guest
   "price_1T3YZAGnB9wsOF5vtpbQgE13", // CREDU Leads
-  "price_1T3YYSGnB9wsOF5vicY71dQl", // Search Tracker
-  "price_1T3YYTGnB9wsOF5vN4yIBiFW", // Search Tracker + CREDU
+  "price_1T3YYSGnB9wsOF5vicY71dQl", // SEO Tracker
+  "price_1T3YYTGnB9wsOF5vN4yIBiFW", // GEO Tracker
 ]);
 
 interface LineItem {
