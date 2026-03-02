@@ -91,6 +91,7 @@ const CLIENTS: Record<string, ClientConfig> = {
         defaultQty: 0,
         maxQty: 1,
         exclusiveGroup: "search-tracker",
+        badge: "Free SEO included",
       },
     ],
   },
