@@ -1,21 +1,10 @@
+import { distributeFetch } from "@/lib/distribute";
+
 async function deployEmailTemplates() {
-  const url = process.env.TRANSACTIONAL_EMAIL_SERVICE_URL;
-  const apiKey = process.env.TRANSACTIONAL_EMAIL_SERVICE_API_KEY;
-
-  if (!url || !apiKey) {
-    console.warn("[instrumentation] Missing TRANSACTIONAL_EMAIL_SERVICE env vars, skipping template deploy");
-    return;
-  }
-
   try {
-    const res = await fetch(`${url}/templates`, {
+    const res = await distributeFetch("/v1/emails/templates", {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": apiKey,
-      },
-      body: JSON.stringify({
-        appId: "growthagency",
+      body: {
         templates: [
           {
             name: "checkout_success",
@@ -70,9 +59,62 @@ Manage your subscription: {{portalUrl}}
 
 — GrowthAgency.dev`,
           },
+          {
+            name: "contact_welcome",
+            subject: "Welcome to GrowthAgency — {{serviceName}}",
+            from: "Kevin Lourd <kevin@growthagency.dev>",
+            messageStream: "outbound",
+            htmlBody: `<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;max-width:480px;margin:0 auto;padding:32px 0;">
+  <h2 style="color:#0f172a;font-size:20px;margin-bottom:16px;">Thanks for reaching out!</h2>
+  <p style="color:#64748b;line-height:1.6;margin-bottom:16px;">
+    We received your interest in <strong>{{serviceName}}</strong>. A member of our team will be in touch shortly.
+  </p>
+  <p style="color:#64748b;line-height:1.6;margin-bottom:24px;">
+    In the meantime, feel free to reply to this email with any questions about your project.
+  </p>
+  <p style="color:#0f172a;font-weight:500;">
+    — Kevin Lourd<br/>
+    <span style="color:#64748b;font-weight:400;">GrowthAgency.dev</span>
+  </p>
+</div>`,
+            textBody: `Thanks for reaching out! We received your interest in "{{serviceName}}". A member of our team will be in touch shortly. Feel free to reply to this email with any questions. — Kevin Lourd, GrowthAgency.dev`,
+          },
+          {
+            name: "contact_email_captured",
+            subject: "New email captured: {{serviceName}} — {{email}}",
+            from: "GrowthAgency.dev <hello@growthagency.dev>",
+            messageStream: "outbound",
+            htmlBody: `<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;padding:16px 0;">
+  <h3 style="color:#0f172a;margin-bottom:12px;">New email captured on growthagency.dev</h3>
+  <table style="color:#334155;line-height:1.8;">
+    <tr><td style="padding-right:16px;color:#94a3b8;">Service</td><td><strong>{{serviceName}}</strong></td></tr>
+    <tr><td style="padding-right:16px;color:#94a3b8;">Email</td><td>{{email}}</td></tr>
+  </table>
+  <p style="color:#94a3b8;margin-top:12px;font-size:13px;">Waiting for phone number (step 2).</p>
+</div>`,
+            textBody: `New email captured on growthagency.dev\nService: {{serviceName}}\nEmail: {{email}}\nWaiting for phone number (step 2).`,
+          },
+          {
+            name: "contact_lead_ready",
+            subject: "New lead ready: {{serviceName}} — {{email}} / {{phone}}",
+            from: "GrowthAgency.dev <hello@growthagency.dev>",
+            messageStream: "outbound",
+            htmlBody: `<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;padding:16px 0;">
+  <h3 style="color:#0f172a;margin-bottom:12px;">New lead from growthagency.dev</h3>
+  <table style="color:#334155;line-height:1.8;">
+    <tr><td style="padding-right:16px;color:#94a3b8;">Service</td><td><strong>{{serviceName}}</strong></td></tr>
+    <tr><td style="padding-right:16px;color:#94a3b8;">Email</td><td>{{email}}</td></tr>
+    <tr><td style="padding-right:16px;color:#94a3b8;">Phone</td><td>{{phone}}</td></tr>
+  </table>
+  <p style="color:#94a3b8;margin-top:12px;font-size:13px;">WhatsApp link opened for the user. Follow up if they don't message.</p>
+</div>`,
+            textBody: `New lead from growthagency.dev\nService: {{serviceName}}\nEmail: {{email}}\nPhone: {{phone}}\nWhatsApp link opened for the user.`,
+          },
         ],
-      }),
+      },
     });
+
+    if (!res) return;
 
     if (!res.ok) {
       const body = await res.text();
