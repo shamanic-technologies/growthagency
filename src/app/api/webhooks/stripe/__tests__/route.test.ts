@@ -34,8 +34,7 @@ describe("POST /api/webhooks/stripe", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.stubEnv("STRIPE_WEBHOOK_SECRET", "whsec_test");
-    vi.stubEnv("TRANSACTIONAL_EMAIL_SERVICE_URL", "https://email.test");
-    vi.stubEnv("TRANSACTIONAL_EMAIL_SERVICE_API_KEY", "key_test");
+    vi.stubEnv("DISTRIBUTE_API_KEY", "distrib.app_test");
     vi.stubEnv("NEXT_PUBLIC_SITE_URL", "https://growthagency.dev");
     mockFetch.mockResolvedValue({ ok: true, text: () => Promise.resolve("") });
   });
@@ -103,15 +102,14 @@ describe("POST /api/webhooks/stripe", () => {
     });
 
     expect(mockFetch).toHaveBeenCalledWith(
-      "https://email.test/send",
+      "https://api.distribute.you/v1/emails/send",
       expect.objectContaining({
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-api-key": "key_test",
+          Authorization: "Bearer distrib.app_test",
         },
         body: JSON.stringify({
-          appId: "growthagency",
           eventType: "checkout_success",
           recipientEmail: "electra@example.com",
           metadata: {
@@ -168,6 +166,29 @@ describe("POST /api/webhooks/stripe", () => {
     const res = await POST(makeRequest("{}"));
     expect(res.status).toBe(200);
     expect(mockPortalCreate).not.toHaveBeenCalled();
+    expect(mockFetch).not.toHaveBeenCalled();
+  });
+
+  it("skips email when DISTRIBUTE_API_KEY is missing", async () => {
+    vi.stubEnv("DISTRIBUTE_API_KEY", "");
+
+    mockConstructEvent.mockReturnValue({
+      type: "checkout.session.completed",
+      data: {
+        object: {
+          id: "cs_test_nokey",
+          customer: "cus_nokey",
+          customer_details: { email: "nokey@example.com" },
+        },
+      },
+    });
+
+    mockPortalCreate.mockResolvedValue({
+      url: "https://billing.stripe.com/portal/sess_nokey",
+    });
+
+    const res = await POST(makeRequest("{}"));
+    expect(res.status).toBe(200);
     expect(mockFetch).not.toHaveBeenCalled();
   });
 });

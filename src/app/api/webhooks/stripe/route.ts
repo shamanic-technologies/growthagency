@@ -1,20 +1,13 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { calculateTrialEnd } from "@/app/api/checkout/route";
+import { distributeFetch } from "@/lib/distribute";
 
 function getStripe() {
   return new Stripe(process.env.STRIPE_SECRET_KEY!);
 }
 
 async function sendCheckoutEmail(customerEmail: string, portalUrl: string) {
-  const url = process.env.TRANSACTIONAL_EMAIL_SERVICE_URL;
-  const apiKey = process.env.TRANSACTIONAL_EMAIL_SERVICE_API_KEY;
-
-  if (!url || !apiKey) {
-    console.warn("[webhook] Missing TRANSACTIONAL_EMAIL_SERVICE env vars, skipping email");
-    return;
-  }
-
   const trialEnd = calculateTrialEnd();
   const billingDate = new Date(trialEnd * 1000).toLocaleDateString("en-US", {
     month: "long",
@@ -23,22 +16,19 @@ async function sendCheckoutEmail(customerEmail: string, portalUrl: string) {
     timeZone: "UTC",
   });
 
-  const res = await fetch(`${url}/send`, {
+  const res = await distributeFetch("/v1/emails/send", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-api-key": apiKey,
-    },
-    body: JSON.stringify({
-      appId: "growthagency",
+    body: {
       eventType: "checkout_success",
       recipientEmail: customerEmail,
       metadata: {
         billingDate,
         portalUrl,
       },
-    }),
+    },
   });
+
+  if (!res) return;
 
   if (!res.ok) {
     const body = await res.text();
