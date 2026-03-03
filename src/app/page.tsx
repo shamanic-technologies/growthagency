@@ -163,12 +163,12 @@ export default function Home() {
             <p className="text-slate-400 mb-12 max-w-xl mx-auto">
               Powered by{" "}
               <a
-                href="https://growthservice.org/"
+                href="https://distribute.you"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-emerald-500 hover:underline"
               >
-                GrowthService
+                Machines
               </a>{" "}
               and{" "}
               <a
@@ -244,8 +244,8 @@ export default function Home() {
                 Highest Quality Execution
               </h3>
               <p className="text-slate-500 text-sm leading-relaxed">
-                We continuously A/B test strategies and optimize every
-                campaign. Consistent execution, maximum value per dollar spent.
+                We continuously test and optimize every campaign.
+                Better results, less waste.
               </p>
             </div>
 
@@ -260,8 +260,7 @@ export default function Home() {
               </h3>
               <p className="text-slate-500 text-sm leading-relaxed">
                 No weeks of onboarding. We start executing within hours, not
-                days. Your campaigns are live before a traditional agency
-                finishes their first meeting.
+                days. Your first campaigns go live fast.
               </p>
             </div>
 
@@ -345,14 +344,13 @@ export default function Home() {
                 Meet Kevin Lourd
               </h2>
               <p className="text-slate-500 mb-4 leading-relaxed">
-                I believe marketing should be smarter, faster, and
-                results-driven. Traditional agencies charge $5K–$20K/month with
-                zero guarantees. I built the tools to change that.
+                I built GrowthAgency to make growth simple, accessible, and
+                transparent. Every campaign is measurable, every result is
+                verifiable.
               </p>
               <p className="text-slate-500 mb-6 leading-relaxed">
                 As your dedicated strategist, I personally design your growth
-                plan and oversee every campaign. You get senior-level strategy
-                with best-in-class execution speed.
+                plan and oversee every campaign. Ask me anything, anytime.
               </p>
               <a
                 href="https://www.linkedin.com/in/kevin-lourd-3394b025/"
