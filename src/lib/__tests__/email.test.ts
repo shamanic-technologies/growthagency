@@ -12,8 +12,8 @@ describe("sendEmail", () => {
     mockFetch.mockResolvedValue({ ok: true, text: () => Promise.resolve("") });
   });
 
-  it("calls Postmark API with correct headers and body", async () => {
-    await sendEmail("checkout_success", "user@example.com", {
+  it("sends checkout_receipt with correct headers and body", async () => {
+    await sendEmail("checkout_receipt", "user@example.com", {
       billingDate: "March 8, 2026",
       portalUrl: "https://billing.stripe.com/session/123",
     });
@@ -31,13 +31,28 @@ describe("sendEmail", () => {
     const body = JSON.parse(opts.body);
     expect(body.From).toBe("GrowthAgency.dev <hello@growthagency.dev>");
     expect(body.To).toBe("user@example.com");
+    expect(body.Subject).toBe("Your subscription is confirmed");
+    expect(body.HtmlBody).toContain("March 8, 2026");
+    expect(body.HtmlBody).toContain("https://billing.stripe.com/session/123");
     expect(body.MessageStream).toBe("my-transactional");
+  });
+
+  it("sends checkout_welcome with personal tone", async () => {
+    await sendEmail("checkout_welcome", "user@example.com", {
+      billingDate: "March 8, 2026",
+    });
+
+    const body = JSON.parse(mockFetch.mock.calls[0][1].body);
+    expect(body.From).toBe("Kevin Lourd <kevin@growthagency.dev>");
+    expect(body.Subject).toBe("Welcome to GrowthAgency — let's grow together");
+    expect(body.HtmlBody).toContain("impossible to ignore");
+    expect(body.TextBody).toContain("Kevin Lourd");
   });
 
   it("falls back to 'outbound' when POSTMARK_TRANSACTIONAL_STREAM_ID is not set", async () => {
     delete process.env.POSTMARK_TRANSACTIONAL_STREAM_ID;
 
-    await sendEmail("checkout_success", "user@example.com", {
+    await sendEmail("checkout_receipt", "user@example.com", {
       billingDate: "March 8, 2026",
       portalUrl: "https://billing.stripe.com/session/123",
     });
@@ -76,7 +91,7 @@ describe("sendEmail", () => {
   it("skips send when POSTMARK_API_KEY is missing", async () => {
     vi.stubEnv("POSTMARK_API_KEY", "");
 
-    await sendEmail("checkout_success", "user@example.com", {
+    await sendEmail("checkout_receipt", "user@example.com", {
       billingDate: "March 8, 2026",
       portalUrl: "https://example.com",
     });
@@ -104,7 +119,7 @@ describe("sendEmail", () => {
     });
     const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 
-    await sendEmail("checkout_success", "bad@", {
+    await sendEmail("checkout_receipt", "bad@", {
       billingDate: "March 8, 2026",
       portalUrl: "https://example.com",
     });
@@ -121,7 +136,7 @@ describe("sendEmail", () => {
     mockFetch.mockRejectedValueOnce(new Error("Network error"));
     const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 
-    await sendEmail("checkout_success", "user@example.com", {
+    await sendEmail("checkout_receipt", "user@example.com", {
       billingDate: "March 8, 2026",
       portalUrl: "https://example.com",
     });

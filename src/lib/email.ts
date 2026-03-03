@@ -1,7 +1,8 @@
 const POSTMARK_API_URL = "https://api.postmarkapp.com/email";
 
 type EventType =
-  | "checkout_success"
+  | "checkout_welcome"
+  | "checkout_receipt"
   | "contact_welcome"
   | "contact_email_captured"
   | "contact_lead_ready";
@@ -24,9 +25,9 @@ function interpolate(
 }
 
 const TEMPLATES: Record<EventType, TemplateDefinition> = {
-  checkout_success: {
-    from: "GrowthAgency.dev <hello@growthagency.dev>",
-    subject: "Welcome to GrowthAgency.dev — You're all set!",
+  checkout_welcome: {
+    from: "Kevin Lourd <kevin@growthagency.dev>",
+    subject: "Welcome to GrowthAgency — let's grow together",
     htmlBody: `<!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
@@ -34,26 +35,77 @@ const TEMPLATES: Record<EventType, TemplateDefinition> = {
   <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f8fafc;padding:40px 20px;">
     <tr><td align="center">
       <table width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;">
-        <!-- Logo -->
         <tr><td align="center" style="padding-bottom:32px;">
           <span style="font-size:18px;color:#94a3b8;">Growth<span style="color:#10b981;font-weight:600;">Agency</span>.dev</span>
         </td></tr>
-        <!-- Card -->
+        <tr><td style="background-color:#ffffff;border-radius:16px;padding:40px 32px;">
+          <h1 style="margin:0 0 16px;font-size:22px;font-weight:700;color:#0f172a;">Welcome aboard!</h1>
+          <p style="margin:0 0 16px;font-size:16px;color:#475569;line-height:1.7;">
+            I built GrowthAgency because I believe every business deserves enterprise-grade growth strategies — without the enterprise price tag.
+          </p>
+          <p style="margin:0 0 16px;font-size:16px;color:#475569;line-height:1.7;">
+            Our mission is simple: <strong style="color:#0f172a;">make your brand impossible to ignore</strong>. Whether it's press coverage, expert quotes, podcast features, or SEO — we handle the heavy lifting so you can focus on what you do best.
+          </p>
+          <p style="margin:0 0 16px;font-size:16px;color:#475569;line-height:1.7;">
+            You're not just subscribing to a service. You're joining a growth engine that works around the clock for your brand.
+          </p>
+          <p style="margin:0 0 0;font-size:16px;color:#475569;line-height:1.7;">
+            I'll personally make sure you get the most out of this. Reply to this email anytime — I read every single one.
+          </p>
+          <p style="margin:24px 0 0;color:#0f172a;font-weight:500;font-size:15px;">
+            — Kevin Lourd<br/>
+            <span style="color:#64748b;font-weight:400;">Founder, GrowthAgency.dev</span>
+          </p>
+        </td></tr>
+        <tr><td align="center" style="padding-top:24px;">
+          <p style="margin:0;font-size:12px;color:#94a3b8;line-height:1.5;">
+            This email was sent by GrowthAgency.dev
+          </p>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`,
+    textBody: `Welcome aboard!
+
+I built GrowthAgency because I believe every business deserves enterprise-grade growth strategies — without the enterprise price tag.
+
+Our mission is simple: make your brand impossible to ignore. Whether it's press coverage, expert quotes, podcast features, or SEO — we handle the heavy lifting so you can focus on what you do best.
+
+You're not just subscribing to a service. You're joining a growth engine that works around the clock for your brand.
+
+I'll personally make sure you get the most out of this. Reply to this email anytime — I read every single one.
+
+— Kevin Lourd
+Founder, GrowthAgency.dev`,
+  },
+
+  checkout_receipt: {
+    from: "GrowthAgency.dev <hello@growthagency.dev>",
+    subject: "Your subscription is confirmed",
+    htmlBody: `<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
+<body style="margin:0;padding:0;background-color:#f8fafc;font-family:'Inter',system-ui,-apple-system,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f8fafc;padding:40px 20px;">
+    <tr><td align="center">
+      <table width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;">
+        <tr><td align="center" style="padding-bottom:32px;">
+          <span style="font-size:18px;color:#94a3b8;">Growth<span style="color:#10b981;font-weight:600;">Agency</span>.dev</span>
+        </td></tr>
         <tr><td style="background-color:#ffffff;border-radius:16px;padding:40px 32px;text-align:center;">
-          <p style="font-size:40px;margin:0 0 16px;">\u{1F389}</p>
-          <h1 style="margin:0 0 12px;font-size:24px;font-weight:700;color:#0f172a;">You're all set!</h1>
+          <h1 style="margin:0 0 16px;font-size:22px;font-weight:700;color:#0f172a;">Subscription Confirmed</h1>
           <p style="margin:0 0 8px;font-size:16px;color:#475569;line-height:1.6;">
-            Your subscription is confirmed and your services start on <strong style="color:#0f172a;">{{billingDate}}</strong>.
+            Your services and billing start on <strong style="color:#0f172a;">{{billingDate}}</strong>.
           </p>
           <p style="margin:0 0 32px;font-size:15px;color:#64748b;line-height:1.6;">
-            We'll be in touch very soon to get things moving. In the meantime, you can manage your subscription anytime from your portal.
+            You can upgrade, downgrade, or cancel your subscription at any time from your billing portal.
           </p>
-          <!-- CTA -->
           <a href="{{portalUrl}}" style="display:inline-block;background-color:#0f172a;color:#ffffff;font-size:15px;font-weight:600;text-decoration:none;padding:14px 32px;border-radius:50px;">
             Manage Your Subscription
           </a>
         </td></tr>
-        <!-- Footer -->
         <tr><td align="center" style="padding-top:24px;">
           <p style="margin:0;font-size:12px;color:#94a3b8;line-height:1.5;">
             This email was sent by GrowthAgency.dev<br>
@@ -65,11 +117,11 @@ const TEMPLATES: Record<EventType, TemplateDefinition> = {
   </table>
 </body>
 </html>`,
-    textBody: `You're all set!
+    textBody: `Subscription Confirmed
 
-Your subscription is confirmed and your services start on {{billingDate}}.
+Your services and billing start on {{billingDate}}.
 
-We'll be in touch very soon to get things moving.
+You can upgrade, downgrade, or cancel your subscription at any time from your billing portal.
 
 Manage your subscription: {{portalUrl}}
 
