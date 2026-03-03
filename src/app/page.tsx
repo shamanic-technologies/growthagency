@@ -334,7 +334,7 @@ export default function Home() {
               <img
                 src="/kevin.jpg"
                 alt="Kevin Lourd"
-                className="w-48 h-48 md:w-56 md:h-56 rounded-2xl object-cover"
+                className="w-48 h-48 md:w-56 md:h-56 rounded-2xl object-cover object-top"
               />
             </div>
 
