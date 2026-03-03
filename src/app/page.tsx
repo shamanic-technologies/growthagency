@@ -385,7 +385,7 @@ export default function Home() {
           </p>
           <div className="flex flex-wrap justify-center gap-6 text-sm mb-6">
             <a
-              href="https://www.linkedin.com/in/kevin-lourd-3394b025/"
+              href="https://www.linkedin.com/company/growthagency-dev/"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-emerald-400 transition"
