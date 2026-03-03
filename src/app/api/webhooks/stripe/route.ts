@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { calculateTrialEnd } from "@/app/api/checkout/route";
-import { distributeFetch } from "@/lib/distribute";
+import { sendEmail } from "@/lib/email";
 
 function getStripe() {
   return new Stripe(process.env.STRIPE_SECRET_KEY!);
@@ -16,26 +16,7 @@ async function sendCheckoutEmail(customerEmail: string, portalUrl: string) {
     timeZone: "UTC",
   });
 
-  const res = await distributeFetch("/v1/emails/send", {
-    method: "POST",
-    body: {
-      eventType: "checkout_success",
-      recipientEmail: customerEmail,
-      metadata: {
-        billingDate,
-        portalUrl,
-      },
-    },
-  });
-
-  if (!res) return;
-
-  if (!res.ok) {
-    const body = await res.text();
-    console.error("[webhook] Email send failed:", res.status, body);
-  } else {
-    console.log("[webhook] Checkout success email sent to", customerEmail);
-  }
+  await sendEmail("checkout_success", customerEmail, { billingDate, portalUrl });
 }
 
 export async function POST(request: Request) {

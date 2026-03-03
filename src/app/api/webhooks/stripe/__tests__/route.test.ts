@@ -34,8 +34,7 @@ describe("POST /api/webhooks/stripe", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.stubEnv("STRIPE_WEBHOOK_SECRET", "whsec_test");
-    vi.stubEnv("NEXT_PUBLIC_DISTRIBUTE_API_URL", "https://api.test");
-    vi.stubEnv("DISTRIBUTE_API_KEY", "distrib.app_test");
+    vi.stubEnv("POSTMARK_API_KEY", "pm_test_key");
     vi.stubEnv("NEXT_PUBLIC_SITE_URL", "https://growthagency.dev");
     mockFetch.mockResolvedValue({ ok: true, text: () => Promise.resolve("") });
   });
@@ -103,23 +102,25 @@ describe("POST /api/webhooks/stripe", () => {
     });
 
     expect(mockFetch).toHaveBeenCalledWith(
-      "https://api.test/v1/emails/send",
+      "https://api.postmarkapp.com/email",
       expect.objectContaining({
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: "Bearer distrib.app_test",
+          Accept: "application/json",
+          "X-Postmark-Server-Token": "pm_test_key",
         },
-        body: JSON.stringify({
-          eventType: "checkout_success",
-          recipientEmail: "electra@example.com",
-          metadata: {
-            billingDate: "March 8, 2026",
-            portalUrl: "https://billing.stripe.com/portal/sess_test",
-          },
-        }),
       }),
     );
+
+    const body = JSON.parse(mockFetch.mock.calls[0][1].body);
+    expect(body.From).toBe("GrowthAgency.dev <hello@growthagency.dev>");
+    expect(body.To).toBe("electra@example.com");
+    expect(body.Subject).toBe("Welcome to GrowthAgency.dev — You're all set!");
+    expect(body.HtmlBody).toContain("March 8, 2026");
+    expect(body.HtmlBody).toContain("https://billing.stripe.com/portal/sess_test");
+    expect(body.TextBody).toContain("March 8, 2026");
+    expect(body.MessageStream).toBe("outbound");
 
     vi.useRealTimers();
   });
@@ -170,8 +171,8 @@ describe("POST /api/webhooks/stripe", () => {
     expect(mockFetch).not.toHaveBeenCalled();
   });
 
-  it("skips email when DISTRIBUTE_API_KEY is missing", async () => {
-    vi.stubEnv("DISTRIBUTE_API_KEY", "");
+  it("skips email when POSTMARK_API_KEY is missing", async () => {
+    vi.stubEnv("POSTMARK_API_KEY", "");
 
     mockConstructEvent.mockReturnValue({
       type: "checkout.session.completed",

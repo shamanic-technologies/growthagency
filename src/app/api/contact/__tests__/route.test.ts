@@ -15,9 +15,8 @@ function makeRequest(body: unknown): Request {
 describe("POST /api/contact", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.stubEnv("NEXT_PUBLIC_DISTRIBUTE_API_URL", "https://api.test");
-    vi.stubEnv("DISTRIBUTE_API_KEY", "distrib.app_test");
-    mockFetch.mockResolvedValue({ ok: true, json: () => Promise.resolve({}) });
+    vi.stubEnv("POSTMARK_API_KEY", "pm_test_key");
+    mockFetch.mockResolvedValue({ ok: true, text: () => Promise.resolve("") });
   });
 
   it("returns 400 when email is missing", async () => {
@@ -51,34 +50,32 @@ describe("POST /api/contact", () => {
 
     expect(mockFetch).toHaveBeenCalledTimes(2);
 
-    // Welcome email to the lead
-    expect(mockFetch).toHaveBeenCalledWith(
-      "https://api.test/v1/emails/send",
-      expect.objectContaining({
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer distrib.app_test",
-        },
-        body: JSON.stringify({
-          eventType: "contact_welcome",
-          recipientEmail: "lead@example.com",
-          metadata: { serviceName: "Organic Press" },
-        }),
-      }),
+    // Both calls go to Postmark
+    for (const call of mockFetch.mock.calls) {
+      expect(call[0]).toBe("https://api.postmarkapp.com/email");
+      expect(call[1].headers["X-Postmark-Server-Token"]).toBe("pm_test_key");
+    }
+
+    const bodies = mockFetch.mock.calls.map(
+      (c: [string, { body: string }]) => JSON.parse(c[1].body),
     );
 
+    // Welcome email to the lead
+    const welcome = bodies.find(
+      (b: { To: string }) => b.To === "lead@example.com",
+    );
+    expect(welcome).toBeDefined();
+    expect(welcome.From).toBe("Kevin Lourd <kevin@growthagency.dev>");
+    expect(welcome.Subject).toBe("Welcome to GrowthAgency — Organic Press");
+    expect(welcome.HtmlBody).toContain("<strong>Organic Press</strong>");
+
     // Notification to Kevin
-    expect(mockFetch).toHaveBeenCalledWith(
-      "https://api.test/v1/emails/send",
-      expect.objectContaining({
-        method: "POST",
-        body: JSON.stringify({
-          eventType: "contact_email_captured",
-          recipientEmail: "kevin@growthagency.dev",
-          metadata: { serviceName: "Organic Press", email: "lead@example.com" },
-        }),
-      }),
+    const notify = bodies.find(
+      (b: { To: string }) => b.To === "kevin@growthagency.dev",
+    );
+    expect(notify).toBeDefined();
+    expect(notify.Subject).toBe(
+      "New email captured: Organic Press — lead@example.com",
     );
   });
 
@@ -110,25 +107,20 @@ describe("POST /api/contact", () => {
     expect(body.success).toBe(true);
 
     expect(mockFetch).toHaveBeenCalledTimes(1);
-    expect(mockFetch).toHaveBeenCalledWith(
-      "https://api.test/v1/emails/send",
-      expect.objectContaining({
-        method: "POST",
-        body: JSON.stringify({
-          eventType: "contact_lead_ready",
-          recipientEmail: "kevin@growthagency.dev",
-          metadata: {
-            serviceName: "Organic Press",
-            email: "lead@example.com",
-            phone: "+33612345678",
-          },
-        }),
-      }),
+    expect(mockFetch.mock.calls[0][0]).toBe("https://api.postmarkapp.com/email");
+
+    const sent = JSON.parse(mockFetch.mock.calls[0][1].body);
+    expect(sent.To).toBe("kevin@growthagency.dev");
+    expect(sent.Subject).toBe(
+      "New lead ready: Organic Press — lead@example.com / +33612345678",
     );
+    expect(sent.HtmlBody).toContain("<strong>Organic Press</strong>");
+    expect(sent.HtmlBody).toContain("lead@example.com");
+    expect(sent.HtmlBody).toContain("+33612345678");
   });
 
-  it("returns 200 even when API key is missing (graceful degradation)", async () => {
-    vi.stubEnv("DISTRIBUTE_API_KEY", "");
+  it("returns 200 even when POSTMARK_API_KEY is missing (graceful degradation)", async () => {
+    vi.stubEnv("POSTMARK_API_KEY", "");
 
     const res = await POST(
       makeRequest({
