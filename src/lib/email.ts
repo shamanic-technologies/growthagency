@@ -156,7 +156,7 @@ export async function sendEmail(
         Subject: interpolate(template.subject, metadata),
         HtmlBody: interpolate(template.htmlBody, metadata),
         TextBody: interpolate(template.textBody, metadata),
-        MessageStream: "outbound",
+        MessageStream: process.env.POSTMARK_TRANSACTIONAL_STREAM_ID ?? "outbound",
       }),
     });
 

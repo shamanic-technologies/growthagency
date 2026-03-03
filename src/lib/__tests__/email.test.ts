@@ -8,6 +8,7 @@ describe("sendEmail", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.stubEnv("POSTMARK_API_KEY", "pm_test_key");
+    vi.stubEnv("POSTMARK_TRANSACTIONAL_STREAM_ID", "my-transactional");
     mockFetch.mockResolvedValue({ ok: true, text: () => Promise.resolve("") });
   });
 
@@ -30,6 +31,18 @@ describe("sendEmail", () => {
     const body = JSON.parse(opts.body);
     expect(body.From).toBe("GrowthAgency.dev <hello@growthagency.dev>");
     expect(body.To).toBe("user@example.com");
+    expect(body.MessageStream).toBe("my-transactional");
+  });
+
+  it("falls back to 'outbound' when POSTMARK_TRANSACTIONAL_STREAM_ID is not set", async () => {
+    delete process.env.POSTMARK_TRANSACTIONAL_STREAM_ID;
+
+    await sendEmail("checkout_success", "user@example.com", {
+      billingDate: "March 8, 2026",
+      portalUrl: "https://billing.stripe.com/session/123",
+    });
+
+    const body = JSON.parse(mockFetch.mock.calls[0][1].body);
     expect(body.MessageStream).toBe("outbound");
   });
 
