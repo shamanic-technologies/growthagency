@@ -41,13 +41,13 @@ const TEMPLATES: Record<EventType, TemplateDefinition> = {
         <tr><td style="background-color:#ffffff;border-radius:16px;padding:40px 32px;">
           <h1 style="margin:0 0 16px;font-size:22px;font-weight:700;color:#0f172a;">Welcome aboard!</h1>
           <p style="margin:0 0 16px;font-size:16px;color:#475569;line-height:1.7;">
-            I built GrowthAgency because I believe every business deserves enterprise-grade growth strategies — without the enterprise price tag.
+            I'm a builder, not a marketing guru. I built GrowthAgency for people like us — founders and builders who'd rather ship product than spend hours on growth strategies.
           </p>
           <p style="margin:0 0 16px;font-size:16px;color:#475569;line-height:1.7;">
-            Our mission is simple: <strong style="color:#0f172a;">make your brand impossible to ignore</strong>. Whether it's press coverage, expert quotes, podcast features, or SEO — we handle the heavy lifting so you can focus on what you do best.
+            Here's why it works: instead of relying on one person's expertise, we tap into <strong style="color:#0f172a;">the collective intelligence of hundreds of proven strategies</strong> across press, SEO, expert quoting, podcasts, and more. Every strategy is backed by <strong style="color:#0f172a;">transparent performance data</strong> — real conversion rates, real costs, real ROI — so you always know exactly what you're getting.
           </p>
           <p style="margin:0 0 16px;font-size:16px;color:#475569;line-height:1.7;">
-            You're not just subscribing to a service. You're joining a growth engine that works around the clock for your brand.
+            The result? Faster onboarding, faster results, and pricing that doesn't require an enterprise budget. We move fast, we stay flexible, and we let the data speak for itself.
           </p>
           <p style="margin:0 0 0;font-size:16px;color:#475569;line-height:1.7;">
             I'll personally make sure you get the most out of this. Reply to this email anytime — I read every single one.
@@ -69,11 +69,11 @@ const TEMPLATES: Record<EventType, TemplateDefinition> = {
 </html>`,
     textBody: `Welcome aboard!
 
-I built GrowthAgency because I believe every business deserves enterprise-grade growth strategies — without the enterprise price tag.
+I'm a builder, not a marketing guru. I built GrowthAgency for people like us — founders and builders who'd rather ship product than spend hours on growth strategies.
 
-Our mission is simple: make your brand impossible to ignore. Whether it's press coverage, expert quotes, podcast features, or SEO — we handle the heavy lifting so you can focus on what you do best.
+Here's why it works: instead of relying on one person's expertise, we tap into the collective intelligence of hundreds of proven strategies across press, SEO, expert quoting, podcasts, and more. Every strategy is backed by transparent performance data — real conversion rates, real costs, real ROI — so you always know exactly what you're getting.
 
-You're not just subscribing to a service. You're joining a growth engine that works around the clock for your brand.
+The result? Faster onboarding, faster results, and pricing that doesn't require an enterprise budget. We move fast, we stay flexible, and we let the data speak for itself.
 
 I'll personally make sure you get the most out of this. Reply to this email anytime — I read every single one.
 

@@ -45,7 +45,7 @@ describe("sendEmail", () => {
     const body = JSON.parse(mockFetch.mock.calls[0][1].body);
     expect(body.From).toBe("Kevin Lourd <kevin@growthagency.dev>");
     expect(body.Subject).toBe("Welcome to GrowthAgency — let's grow together");
-    expect(body.HtmlBody).toContain("impossible to ignore");
+    expect(body.HtmlBody).toContain("collective intelligence");
     expect(body.TextBody).toContain("Kevin Lourd");
   });
 
