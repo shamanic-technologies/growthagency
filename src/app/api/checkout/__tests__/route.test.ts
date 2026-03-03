@@ -232,6 +232,7 @@ describe("POST /api/checkout", () => {
 
     expect(mockCreate).toHaveBeenCalledWith({
       mode: "subscription",
+      allow_promotion_codes: true,
       line_items: [
         { price: "price_1T3YYOGnB9wsOF5vKfXQjvsg", quantity: 2 },
         { price: "price_1T3YYPGnB9wsOF5vbWQLuyE8", quantity: 1 },

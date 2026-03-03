@@ -84,6 +84,7 @@ export async function POST(request: Request) {
 
     const session = await getStripe().checkout.sessions.create({
       mode: "subscription",
+      allow_promotion_codes: true,
       line_items: lineItems.map((item) => ({
         price: item.priceId,
         quantity: item.quantity,

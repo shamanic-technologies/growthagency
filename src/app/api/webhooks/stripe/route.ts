@@ -7,7 +7,12 @@ function getStripe() {
   return new Stripe(process.env.STRIPE_SECRET_KEY!);
 }
 
-async function sendCheckoutEmail(customerEmail: string, portalUrl: string) {
+async function sendCheckoutEmails(
+  stripe: Stripe,
+  customerId: string,
+  customerEmail: string,
+  portalUrl: string,
+) {
   const trialEnd = calculateTrialEnd();
   const billingDate = new Date(trialEnd * 1000).toLocaleDateString("en-US", {
     month: "long",
@@ -16,7 +21,21 @@ async function sendCheckoutEmail(customerEmail: string, portalUrl: string) {
     timeZone: "UTC",
   });
 
-  await sendEmail("checkout_success", customerEmail, { billingDate, portalUrl });
+  const customer = await stripe.customers.retrieve(customerId) as Stripe.Customer;
+  const alreadyWelcomed = customer.metadata?.welcome_email_sent === "true";
+
+  const emails: Promise<void>[] = [
+    sendEmail("checkout_receipt", customerEmail, { billingDate, portalUrl }),
+  ];
+
+  if (!alreadyWelcomed) {
+    emails.push(sendEmail("checkout_welcome", customerEmail, { billingDate }));
+    await stripe.customers.update(customerId, {
+      metadata: { welcome_email_sent: "true" },
+    });
+  }
+
+  await Promise.all(emails);
 }
 
 export async function POST(request: Request) {
@@ -48,12 +67,13 @@ export async function POST(request: Request) {
 
     if (customerEmail && customerId) {
       try {
-        const portalSession = await getStripe().billingPortal.sessions.create({
+        const stripe = getStripe();
+        const portalSession = await stripe.billingPortal.sessions.create({
           customer: customerId,
           return_url: process.env.NEXT_PUBLIC_SITE_URL || "https://growthagency.dev",
         });
 
-        await sendCheckoutEmail(customerEmail, portalSession.url);
+        await sendCheckoutEmails(stripe, customerId, customerEmail, portalSession.url);
       } catch (err) {
         console.error("[webhook] Error processing checkout.session.completed:", err);
       }

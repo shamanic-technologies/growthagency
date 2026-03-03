@@ -1,9 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { POST } from "../route";
 
-const { mockConstructEvent, mockPortalCreate } = vi.hoisted(() => ({
+const { mockConstructEvent, mockPortalCreate, mockCustomerRetrieve, mockCustomerUpdate } = vi.hoisted(() => ({
   mockConstructEvent: vi.fn(),
   mockPortalCreate: vi.fn(),
+  mockCustomerRetrieve: vi.fn(),
+  mockCustomerUpdate: vi.fn(),
 }));
 
 vi.mock("stripe", () => {
@@ -11,6 +13,7 @@ vi.mock("stripe", () => {
     return {
       webhooks: { constructEvent: mockConstructEvent },
       billingPortal: { sessions: { create: mockPortalCreate } },
+      customers: { retrieve: mockCustomerRetrieve, update: mockCustomerUpdate },
     };
   };
   return { default: StripeMock };
@@ -37,6 +40,8 @@ describe("POST /api/webhooks/stripe", () => {
     vi.stubEnv("POSTMARK_API_KEY", "pm_test_key");
     vi.stubEnv("NEXT_PUBLIC_SITE_URL", "https://growthagency.dev");
     mockFetch.mockResolvedValue({ ok: true, text: () => Promise.resolve("") });
+    mockCustomerRetrieve.mockResolvedValue({ metadata: {} });
+    mockCustomerUpdate.mockResolvedValue({});
   });
 
   it("returns 400 when signature is missing", async () => {
@@ -74,7 +79,7 @@ describe("POST /api/webhooks/stripe", () => {
     expect(mockFetch).not.toHaveBeenCalled();
   });
 
-  it("sends email on checkout.session.completed", async () => {
+  it("sends welcome + receipt emails on first checkout", async () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date("2026-02-22T12:00:00Z"));
 
@@ -101,26 +106,62 @@ describe("POST /api/webhooks/stripe", () => {
       return_url: "https://growthagency.dev",
     });
 
-    expect(mockFetch).toHaveBeenCalledWith(
-      "https://api.postmarkapp.com/email",
-      expect.objectContaining({
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-          "X-Postmark-Server-Token": "pm_test_key",
-        },
-      }),
-    );
+    expect(mockCustomerRetrieve).toHaveBeenCalledWith("cus_abc");
+    expect(mockCustomerUpdate).toHaveBeenCalledWith("cus_abc", {
+      metadata: { welcome_email_sent: "true" },
+    });
 
+    expect(mockFetch).toHaveBeenCalledTimes(2);
+
+    const calls = mockFetch.mock.calls.map(
+      ([, opts]: [string, { body: string }]) => JSON.parse(opts.body),
+    );
+    const receipt = calls.find((b: Record<string, string>) => b.Subject === "Your subscription is confirmed");
+    const welcome = calls.find((b: Record<string, string>) => b.Subject === "Welcome to GrowthAgency — let's grow together");
+
+    expect(receipt).toBeDefined();
+    expect(receipt.To).toBe("electra@example.com");
+    expect(receipt.From).toBe("GrowthAgency.dev <hello@growthagency.dev>");
+    expect(receipt.HtmlBody).toContain("March 8, 2026");
+    expect(receipt.HtmlBody).toContain("https://billing.stripe.com/portal/sess_test");
+
+    expect(welcome).toBeDefined();
+    expect(welcome.To).toBe("electra@example.com");
+    expect(welcome.From).toBe("Kevin Lourd <kevin@growthagency.dev>");
+
+    vi.useRealTimers();
+  });
+
+  it("skips welcome email for returning customer", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-02-22T12:00:00Z"));
+
+    mockCustomerRetrieve.mockResolvedValue({
+      metadata: { welcome_email_sent: "true" },
+    });
+
+    mockConstructEvent.mockReturnValue({
+      type: "checkout.session.completed",
+      data: {
+        object: {
+          id: "cs_test_returning",
+          customer: "cus_returning",
+          customer_details: { email: "returning@example.com" },
+        },
+      },
+    });
+
+    mockPortalCreate.mockResolvedValue({
+      url: "https://billing.stripe.com/portal/sess_returning",
+    });
+
+    const res = await POST(makeRequest("{}"));
+    expect(res.status).toBe(200);
+
+    expect(mockFetch).toHaveBeenCalledTimes(1);
     const body = JSON.parse(mockFetch.mock.calls[0][1].body);
-    expect(body.From).toBe("GrowthAgency.dev <hello@growthagency.dev>");
-    expect(body.To).toBe("electra@example.com");
-    expect(body.Subject).toBe("Welcome to GrowthAgency.dev — You're all set!");
-    expect(body.HtmlBody).toContain("March 8, 2026");
-    expect(body.HtmlBody).toContain("https://billing.stripe.com/portal/sess_test");
-    expect(body.TextBody).toContain("March 8, 2026");
-    expect(body.MessageStream).toBe("outbound");
+    expect(body.Subject).toBe("Your subscription is confirmed");
+    expect(mockCustomerUpdate).not.toHaveBeenCalled();
 
     vi.useRealTimers();
   });
@@ -147,10 +188,12 @@ describe("POST /api/webhooks/stripe", () => {
       text: () => Promise.resolve("Internal error"),
     });
 
+    const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
     const res = await POST(makeRequest("{}"));
     expect(res.status).toBe(200);
     const body = await res.json();
     expect(body.received).toBe(true);
+    consoleSpy.mockRestore();
   });
 
   it("handles missing customer email gracefully", async () => {
