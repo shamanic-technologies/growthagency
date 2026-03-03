@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { distributeFetch } from "@/lib/distribute";
+import { sendEmail } from "@/lib/email";
 
 const NOTIFY_EMAIL = "kevin@growthagency.dev";
 
@@ -20,25 +20,10 @@ export async function POST(request: Request) {
     }
 
     if (step === "welcome") {
-      const welcomePromise = distributeFetch("/v1/emails/send", {
-        method: "POST",
-        body: {
-          eventType: "contact_welcome",
-          recipientEmail: email,
-          metadata: { serviceName },
-        },
-      });
-
-      const notifyPromise = distributeFetch("/v1/emails/send", {
-        method: "POST",
-        body: {
-          eventType: "contact_email_captured",
-          recipientEmail: NOTIFY_EMAIL,
-          metadata: { serviceName, email },
-        },
-      });
-
-      await Promise.allSettled([welcomePromise, notifyPromise]);
+      await Promise.allSettled([
+        sendEmail("contact_welcome", email, { serviceName }),
+        sendEmail("contact_email_captured", NOTIFY_EMAIL, { serviceName, email }),
+      ]);
       return NextResponse.json({ success: true });
     }
 
@@ -47,15 +32,7 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: "Missing phone" }, { status: 400 });
       }
 
-      await distributeFetch("/v1/emails/send", {
-        method: "POST",
-        body: {
-          eventType: "contact_lead_ready",
-          recipientEmail: NOTIFY_EMAIL,
-          metadata: { serviceName, email, phone },
-        },
-      });
-
+      await sendEmail("contact_lead_ready", NOTIFY_EMAIL, { serviceName, email, phone });
       return NextResponse.json({ success: true });
     }
 
