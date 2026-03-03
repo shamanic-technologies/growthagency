@@ -27,7 +27,7 @@ function interpolate(
 const TEMPLATES: Record<EventType, TemplateDefinition> = {
   checkout_welcome: {
     from: "Kevin Lourd <kevin@growthagency.dev>",
-    subject: "Welcome to GrowthAgency",
+    subject: "Welcome to GrowthAgency.dev — let's grow together",
     htmlBody: `<!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>

@@ -117,7 +117,7 @@ describe("POST /api/webhooks/stripe", () => {
       ([, opts]: [string, { body: string }]) => JSON.parse(opts.body),
     );
     const receipt = calls.find((b: Record<string, string>) => b.Subject === "Your subscription is confirmed");
-    const welcome = calls.find((b: Record<string, string>) => b.Subject === "Welcome to GrowthAgency");
+    const welcome = calls.find((b: Record<string, string>) => b.Subject === "Welcome to GrowthAgency.dev — let's grow together");
 
     expect(receipt).toBeDefined();
     expect(receipt.To).toBe("electra@example.com");
