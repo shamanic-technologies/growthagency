@@ -27,7 +27,7 @@ function interpolate(
 const TEMPLATES: Record<EventType, TemplateDefinition> = {
   checkout_welcome: {
     from: "Kevin Lourd <kevin@growthagency.dev>",
-    subject: "Welcome to GrowthAgency — let's grow together",
+    subject: "Welcome to GrowthAgency",
     htmlBody: `<!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
@@ -39,18 +39,18 @@ const TEMPLATES: Record<EventType, TemplateDefinition> = {
           <span style="font-size:18px;color:#94a3b8;">Growth<span style="color:#10b981;font-weight:600;">Agency</span>.dev</span>
         </td></tr>
         <tr><td style="background-color:#ffffff;border-radius:16px;padding:40px 32px;">
-          <h1 style="margin:0 0 16px;font-size:22px;font-weight:700;color:#0f172a;">Welcome aboard!</h1>
+          <h1 style="margin:0 0 24px;font-size:22px;font-weight:700;color:#0f172a;">Welcome!</h1>
           <p style="margin:0 0 16px;font-size:16px;color:#475569;line-height:1.7;">
-            I'm a builder, not a marketing guru. I built GrowthAgency for people like us — founders and builders who'd rather ship product than spend hours on growth strategies.
+            I built GrowthAgency to help you grow, rise, and expand — because you deserve it.
           </p>
           <p style="margin:0 0 16px;font-size:16px;color:#475569;line-height:1.7;">
-            Here's why it works: instead of relying on one person's expertise, we tap into <strong style="color:#0f172a;">the collective intelligence of hundreds of proven strategies</strong> across press, SEO, expert quoting, podcasts, and more. Every strategy is backed by <strong style="color:#0f172a;">transparent performance data</strong> — real conversion rates, real costs, real ROI — so you always know exactly what you're getting.
+            Growth needs to be simple, accessible and transparent. Measurable, benchmarkable, verifiable. That is the way we operate.
           </p>
           <p style="margin:0 0 16px;font-size:16px;color:#475569;line-height:1.7;">
-            The result? Faster onboarding, faster results, and pricing that doesn't require an enterprise budget. We move fast, we stay flexible, and we let the data speak for itself.
+            Together, we're going to do great things. Ask me anything, anytime.
           </p>
           <p style="margin:0 0 0;font-size:16px;color:#475569;line-height:1.7;">
-            I'll personally make sure you get the most out of this. Reply to this email anytime — I read every single one.
+            Welcome aboard.
           </p>
           <p style="margin:24px 0 0;color:#0f172a;font-weight:500;font-size:15px;">
             — Kevin Lourd<br/>
@@ -67,15 +67,15 @@ const TEMPLATES: Record<EventType, TemplateDefinition> = {
   </table>
 </body>
 </html>`,
-    textBody: `Welcome aboard!
+    textBody: `Welcome!
 
-I'm a builder, not a marketing guru. I built GrowthAgency for people like us — founders and builders who'd rather ship product than spend hours on growth strategies.
+I built GrowthAgency to help you grow, rise, and expand — because you deserve it.
 
-Here's why it works: instead of relying on one person's expertise, we tap into the collective intelligence of hundreds of proven strategies across press, SEO, expert quoting, podcasts, and more. Every strategy is backed by transparent performance data — real conversion rates, real costs, real ROI — so you always know exactly what you're getting.
+Growth needs to be simple, accessible and transparent. Measurable, benchmarkable, verifiable. That is the way we operate.
 
-The result? Faster onboarding, faster results, and pricing that doesn't require an enterprise budget. We move fast, we stay flexible, and we let the data speak for itself.
+Together, we're going to do great things. Ask me anything, anytime.
 
-I'll personally make sure you get the most out of this. Reply to this email anytime — I read every single one.
+Welcome aboard.
 
 — Kevin Lourd
 Founder, GrowthAgency.dev`,
