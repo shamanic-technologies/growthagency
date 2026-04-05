@@ -10,6 +10,19 @@ export function getStripe(): Stripe {
 }
 
 const SPOTS_PER_COHORT = 2;
+const PRODUCT_NAME = "PR Article \u2014 GrowthAgency";
+const PRICE_AMOUNT_CENTS = 500000;
+
+let cachedProductId: string | null = null;
+let cachedPriceId: string | null = null;
+
+export function getProductId(): string | null {
+  return cachedProductId ?? process.env.STRIPE_PR_PRODUCT_ID ?? null;
+}
+
+export function getPriceId(): string | null {
+  return cachedPriceId ?? process.env.STRIPE_PR_PRICE_ID ?? null;
+}
 
 export interface CohortInfo {
   month: string;
@@ -30,8 +43,53 @@ export function monthKeyToDisplay(key: string): string {
   return date.toLocaleDateString("en-US", { month: "long", year: "numeric" });
 }
 
+export async function setupStripeProducts(): Promise<void> {
+  const stripe = getStripe();
+
+  const products = await stripe.products.search({
+    query: 'metadata["app"]:"growthagency" AND metadata["type"]:"pr-article"',
+  });
+
+  let product: Stripe.Product;
+  if (products.data.length > 0) {
+    product = products.data[0];
+    console.log(`[growthagency] Found existing Stripe product: ${product.id}`);
+  } else {
+    const nextKey = getNextMonthKey();
+    product = await stripe.products.create({
+      name: PRODUCT_NAME,
+      metadata: {
+        app: "growthagency",
+        type: "pr-article",
+        cohort_month: nextKey,
+        spots_remaining: String(SPOTS_PER_COHORT),
+      },
+    });
+    console.log(`[growthagency] Created Stripe product: ${product.id}`);
+  }
+  cachedProductId = product.id;
+
+  const prices = await stripe.prices.list({ product: product.id, active: true });
+  const existingPrice = prices.data.find(
+    (p) => p.unit_amount === PRICE_AMOUNT_CENTS && p.type === "one_time" && p.currency === "usd",
+  );
+
+  if (existingPrice) {
+    cachedPriceId = existingPrice.id;
+    console.log(`[growthagency] Found existing Stripe price: ${existingPrice.id}`);
+  } else {
+    const price = await stripe.prices.create({
+      product: product.id,
+      unit_amount: PRICE_AMOUNT_CENTS,
+      currency: "usd",
+    });
+    cachedPriceId = price.id;
+    console.log(`[growthagency] Created Stripe price: ${price.id}`);
+  }
+}
+
 export async function getCohortInfo(): Promise<CohortInfo> {
-  const productId = process.env.STRIPE_PR_PRODUCT_ID;
+  const productId = getProductId();
 
   if (!productId) {
     const nextKey = getNextMonthKey();
@@ -52,6 +110,7 @@ export async function getCohortInfo(): Promise<CohortInfo> {
   if (!storedMonth || storedMonth < nextMonthKey) {
     await stripe.products.update(productId, {
       metadata: {
+        ...product.metadata,
         cohort_month: nextMonthKey,
         spots_remaining: String(SPOTS_PER_COHORT),
       },
@@ -73,7 +132,7 @@ export async function getCohortInfo(): Promise<CohortInfo> {
 }
 
 export async function decrementCohortSpots(): Promise<void> {
-  const productId = process.env.STRIPE_PR_PRODUCT_ID;
+  const productId = getProductId();
   if (!productId) return;
 
   const stripe = getStripe();

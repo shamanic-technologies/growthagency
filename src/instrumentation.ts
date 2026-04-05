@@ -1,3 +1,6 @@
 export async function register() {
-  // Emails sent directly via Postmark API — no startup registrations needed
+  if (process.env.STRIPE_SECRET_KEY) {
+    const { setupStripeProducts } = await import("@/lib/stripe");
+    await setupStripeProducts();
+  }
 }
