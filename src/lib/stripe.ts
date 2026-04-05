@@ -37,6 +37,15 @@ export function getNextMonthKey(): string {
   return `${next.getFullYear()}-${String(next.getMonth() + 1).padStart(2, "0")}`;
 }
 
+export function daysUntilMonthKey(monthKey: string): number {
+  const [year, month] = monthKey.split("-").map(Number);
+  const target = new Date(year, month - 1, 1);
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const diff = target.getTime() - today.getTime();
+  return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
+}
+
 export function monthKeyToDisplay(key: string): string {
   const [year, month] = key.split("-");
   const date = new Date(parseInt(year), parseInt(month) - 1, 1);

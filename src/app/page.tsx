@@ -1,7 +1,7 @@
 import { Navbar } from "@/components/navbar";
 import { LetsTalkButton } from "@/components/lets-talk-button";
 import { ReserveSpotButton } from "@/components/reserve-spot-button";
-import { getCohortInfo } from "@/lib/stripe";
+import { getCohortInfo, daysUntilMonthKey } from "@/lib/stripe";
 
 export const dynamic = "force-dynamic";
 
@@ -32,7 +32,7 @@ const FAQ_ITEMS = [
   },
   {
     q: "What\u2019s the cohort system?",
-    a: "Kevin works with a limited number of clients each month to ensure personalized attention. Each monthly cohort has 2 spots. Once they\u2019re filled, you join the next month\u2019s cohort.",
+    a: "Kevin works with a limited number of clients each month to ensure personalized attention. Once spots are filled, you join the next month\u2019s cohort.",
   },
 ];
 
@@ -57,6 +57,7 @@ const VALUE_STACK = [
 export default async function Home() {
   const cohort = await getCohortInfo();
   const soldOut = cohort.spotsRemaining <= 0;
+  const daysLeft = daysUntilMonthKey(cohort.monthKey);
 
   return (
     <main className="min-h-screen">
@@ -84,22 +85,14 @@ export default async function Home() {
               get every cent back.
             </p>
 
-            <CohortBadge month={cohort.month} spotsRemaining={cohort.spotsRemaining} soldOut={soldOut} />
+            <CohortCard month={cohort.month} spotsRemaining={cohort.spotsRemaining} daysLeft={daysLeft} soldOut={soldOut} />
 
-            <div className="flex flex-col sm:flex-row gap-3 justify-center mb-16">
-              <LetsTalkButton
-                serviceName="PR Article"
-                className="px-8 py-4 bg-slate-900 text-white rounded-full hover:bg-slate-800 font-semibold text-lg transition shadow-md hover:shadow-lg cursor-pointer"
-              >
-                Book a 15-min Call
-              </LetsTalkButton>
-              <ReserveSpotButton
-                disabled={soldOut}
-                className="px-8 py-4 bg-emerald-500 text-white rounded-full hover:bg-emerald-600 font-semibold text-lg transition shadow-md hover:shadow-lg cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
-              >
-                {soldOut ? "Sold Out" : "Reserve My Spot \u2014 $5,000"}
-              </ReserveSpotButton>
-            </div>
+            <LetsTalkButton
+              serviceName="PR Article"
+              className="px-8 py-4 bg-slate-900 text-white rounded-full hover:bg-slate-800 font-semibold text-lg transition shadow-md hover:shadow-lg cursor-pointer mb-16"
+            >
+              Book a 15-min Call
+            </LetsTalkButton>
 
             <div className="flex flex-wrap gap-8 sm:gap-12 justify-center">
               <div className="text-center">
@@ -344,7 +337,6 @@ export default async function Home() {
       {/* Final CTA */}
       <section className="py-16 sm:py-24 px-4 bg-white">
         <div className="max-w-3xl mx-auto text-center">
-          <CohortBadge month={cohort.month} spotsRemaining={cohort.spotsRemaining} soldOut={soldOut} />
           <h2 className="text-3xl md:text-4xl font-semibold mb-4 text-slate-900 tracking-tight">
             Ready to Get Published?
           </h2>
@@ -352,20 +344,13 @@ export default async function Home() {
             You pay per article. We deliver or you get 100% back. No retainer.
             No risk.
           </p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <LetsTalkButton
-              serviceName="PR Article"
-              className="px-8 py-4 bg-slate-900 text-white rounded-full hover:bg-slate-800 font-semibold text-lg transition shadow-md hover:shadow-lg cursor-pointer"
-            >
-              Book a 15-min Call
-            </LetsTalkButton>
-            <ReserveSpotButton
-              disabled={soldOut}
-              className="px-8 py-4 bg-emerald-500 text-white rounded-full hover:bg-emerald-600 font-semibold text-lg transition shadow-md hover:shadow-lg cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
-            >
-              {soldOut ? "Sold Out" : "Reserve My Spot \u2014 $5,000"}
-            </ReserveSpotButton>
-          </div>
+          <CohortCard month={cohort.month} spotsRemaining={cohort.spotsRemaining} daysLeft={daysLeft} soldOut={soldOut} />
+          <LetsTalkButton
+            serviceName="PR Article"
+            className="px-8 py-4 bg-slate-900 text-white rounded-full hover:bg-slate-800 font-semibold text-lg transition shadow-md hover:shadow-lg cursor-pointer"
+          >
+            Book a 15-min Call
+          </LetsTalkButton>
         </div>
       </section>
 
@@ -447,24 +432,46 @@ export default async function Home() {
   );
 }
 
-function CohortBadge({
+function CohortCard({
   month,
   spotsRemaining,
+  daysLeft,
   soldOut,
 }: {
   month: string;
   spotsRemaining: number;
+  daysLeft: number;
   soldOut: boolean;
 }) {
   return (
-    <div className="inline-flex items-center gap-2 bg-amber-50 text-amber-700 px-4 py-2 rounded-full text-sm font-medium mb-8 border border-amber-200">
-      {soldOut ? (
-        <>Cohort {month} &mdash; Sold Out</>
-      ) : (
-        <>
-          {spotsRemaining} {spotsRemaining === 1 ? "spot" : "spots"} remaining
-          &mdash; Cohort {month}
-        </>
+    <div className="inline-block bg-white rounded-2xl border-2 border-emerald-200 px-8 py-6 mb-8 shadow-sm max-w-sm w-full">
+      <div className="flex items-center justify-center gap-2 mb-1">
+        <span className={`w-2 h-2 rounded-full ${soldOut ? "bg-slate-400" : "bg-emerald-500"}`} />
+        <span className={`text-xs font-semibold uppercase tracking-wider ${soldOut ? "text-slate-400" : "text-emerald-600"}`}>
+          {soldOut ? "Sold Out" : "Open"}
+        </span>
+      </div>
+      <h3 className="text-xl font-bold text-slate-900 mb-1">{month} Cohort</h3>
+      {!soldOut && daysLeft > 0 && (
+        <p className="text-sm text-slate-400 mb-4">
+          Closes in {daysLeft} {daysLeft === 1 ? "day" : "days"}
+        </p>
+      )}
+      {soldOut && (
+        <p className="text-sm text-slate-400 mb-4">
+          Next cohort opens soon
+        </p>
+      )}
+      <ReserveSpotButton
+        disabled={soldOut}
+        className="w-full px-6 py-3 bg-emerald-500 text-white rounded-xl hover:bg-emerald-600 font-semibold transition shadow-sm hover:shadow-md cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed mb-3"
+      >
+        {soldOut ? "Sold Out" : "Apply \u2014 $5,000"}
+      </ReserveSpotButton>
+      {!soldOut && (
+        <p className="text-sm text-slate-400">
+          {spotsRemaining} {spotsRemaining === 1 ? "spot" : "spots"} available
+        </p>
       )}
     </div>
   );
