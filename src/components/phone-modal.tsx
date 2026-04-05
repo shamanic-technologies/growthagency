@@ -2,6 +2,7 @@
 
 import { useState, useEffect, type FormEvent } from "react";
 import { createPortal } from "react-dom";
+import { usePostHog } from "posthog-js/react";
 
 // TODO: Replace with your real WhatsApp number (with country code, no +)
 const WHATSAPP_NUMBER = "33680478702";
@@ -41,6 +42,7 @@ export function PhoneModal({ serviceName, onClose }: PhoneModalProps) {
   const [phone, setPhone] = useState("");
   const [sending, setSending] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const posthog = usePostHog();
 
   useEffect(() => {
     setMounted(true);
@@ -70,6 +72,7 @@ export function PhoneModal({ serviceName, onClose }: PhoneModalProps) {
       // Don't block the user if email fails
     }
     setSending(false);
+    posthog?.capture("contact_email_submitted", { service_name: serviceName });
     setStep(2);
   };
 
@@ -90,6 +93,7 @@ export function PhoneModal({ serviceName, onClose }: PhoneModalProps) {
       // Don't block the user
     }
     setSending(false);
+    posthog?.capture("contact_phone_submitted", { service_name: serviceName });
 
     const message = encodeURIComponent(
       `Hi! I'm interested in "${serviceName}". My number: ${fullPhone}`
