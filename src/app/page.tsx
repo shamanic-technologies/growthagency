@@ -41,7 +41,7 @@ const COMPARISON = [
   ["Price", "$10\u201320K/month", "$5,000 per article"],
   ["Guarantee", "None", "100% refund if not delivered"],
   ["Your Time", "4+ hours/month of meetings", "15 minutes. Total."],
-  ["Timeline", "6+ months, maybe", "First pitches within days"],
+  ["Timeline", "6+ months, maybe", "First pitches in 24h"],
   ["Tracking", "Monthly PDF report", "Real-time visibility on every pitch"],
 ];
 
