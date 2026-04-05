@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getStripe, getCohortInfo, getPriceId } from "@/lib/stripe";
 
 export async function POST() {
-  const priceId = getPriceId();
+  const priceId = await getPriceId();
   if (!priceId) {
     return NextResponse.json(
       { error: "Payment not configured" },
