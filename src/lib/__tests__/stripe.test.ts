@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import {
   getNextMonthKey,
   monthKeyToDisplay,
+  daysUntilMonthKey,
   getCohortInfo,
   decrementCohortSpots,
   setupStripeProducts,
@@ -56,6 +57,29 @@ describe("monthKeyToDisplay", () => {
     expect(monthKeyToDisplay("2026-05")).toBe("May 2026");
     expect(monthKeyToDisplay("2026-12")).toBe("December 2026");
     expect(monthKeyToDisplay("2027-01")).toBe("January 2027");
+  });
+});
+
+describe("daysUntilMonthKey", () => {
+  it("returns days until the 1st of the given month", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-04-06T12:00:00Z"));
+    expect(daysUntilMonthKey("2026-05")).toBe(25);
+    vi.useRealTimers();
+  });
+
+  it("returns 0 when target month has already started", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-05-03T12:00:00Z"));
+    expect(daysUntilMonthKey("2026-05")).toBe(0);
+    vi.useRealTimers();
+  });
+
+  it("returns 1 on the day before the 1st", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-04-30T12:00:00Z"));
+    expect(daysUntilMonthKey("2026-05")).toBe(1);
+    vi.useRealTimers();
   });
 });
 
