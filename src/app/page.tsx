@@ -266,7 +266,7 @@ export default async function Home() {
           <div className="text-center mt-12">
             <p className="text-slate-400 mb-2">
               Total market value:{" "}
-              <span className="line-through">$8,000\u2013$12,000+</span>
+              <span className="line-through">$8,000-$12,000+</span>
             </p>
             <p className="text-3xl font-bold mb-2">Your investment: $5,000</p>
             <p className="text-emerald-400 font-medium">
