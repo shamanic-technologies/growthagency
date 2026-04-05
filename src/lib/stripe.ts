@@ -15,12 +15,19 @@ const PRICE_AMOUNT_CENTS = 500000;
 
 let cachedProductId: string | null = null;
 let cachedPriceId: string | null = null;
+let setupPromise: Promise<void> | null = null;
 
 export function getProductId(): string | null {
   return cachedProductId ?? process.env.STRIPE_PR_PRODUCT_ID ?? null;
 }
 
-export function getPriceId(): string | null {
+export async function getPriceId(): Promise<string | null> {
+  if (!cachedPriceId && !process.env.STRIPE_PR_PRICE_ID && process.env.STRIPE_SECRET_KEY) {
+    if (!setupPromise) {
+      setupPromise = setupStripeProducts();
+    }
+    await setupPromise;
+  }
   return cachedPriceId ?? process.env.STRIPE_PR_PRICE_ID ?? null;
 }
 

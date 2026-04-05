@@ -237,7 +237,7 @@ describe("setupStripeProducts", () => {
     expect(mockCreate).not.toHaveBeenCalled();
     expect(mockPricesCreate).not.toHaveBeenCalled();
     expect(getProductId()).toBe("prod_existing");
-    expect(getPriceId()).toBe("price_existing");
+    expect(await getPriceId()).toBe("price_existing");
   });
 
   it("creates product and price when none exist", async () => {
@@ -263,7 +263,7 @@ describe("setupStripeProducts", () => {
       currency: "usd",
     });
     expect(getProductId()).toBe("prod_new");
-    expect(getPriceId()).toBe("price_new");
+    expect(await getPriceId()).toBe("price_new");
   });
 
   it("reuses existing product but creates price when no matching price", async () => {
@@ -281,7 +281,7 @@ describe("setupStripeProducts", () => {
       unit_amount: 500000,
       currency: "usd",
     });
-    expect(getPriceId()).toBe("price_correct");
+    expect(await getPriceId()).toBe("price_correct");
   });
 });
 
@@ -294,11 +294,7 @@ describe("getProductId / getPriceId", () => {
     vi.stubEnv("STRIPE_PR_PRODUCT_ID", "prod_env");
     vi.stubEnv("STRIPE_PR_PRICE_ID", "price_env");
 
-    // Re-import to get fresh module state — but since vitest caches modules,
-    // the cached values from setupStripeProducts tests above may persist.
-    // The env fallback is tested implicitly by the checkout route tests.
-    // Here we just verify the functions don't throw.
     expect(typeof getProductId()).toBe("string");
-    expect(typeof getPriceId()).toBe("string");
+    expect(typeof (await getPriceId())).toBe("string");
   });
 });

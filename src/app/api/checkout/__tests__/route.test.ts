@@ -35,6 +35,7 @@ describe("POST /api/checkout", () => {
 
   it("returns 503 when STRIPE_PR_PRICE_ID is not set", async () => {
     vi.stubEnv("STRIPE_PR_PRICE_ID", "");
+    vi.stubEnv("STRIPE_SECRET_KEY", "");
     const res = await POST();
     expect(res.status).toBe(503);
     const body = await res.json();
