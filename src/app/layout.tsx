@@ -4,27 +4,27 @@ import "./globals.css";
 const SITE_URL = "https://growthagency.dev";
 const SITE_NAME = "GrowthAgency.dev";
 const SITE_DESCRIPTION =
-  "GrowthAgency.dev — Your growth team. Sales outreach, PR, AI search visibility, and SEO with guaranteed results. Dedicated strategist, fast execution, money-back guarantee.";
+  "Your PR agency. No retainer. $5,000 per article in a DR50+ publication, delivered or 100% refunded. Guaranteed results by Kevin Lourd.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "GrowthAgency.dev — Your Growth Team, Guaranteed Results",
+    default: "GrowthAgency.dev — Your PR Agency. No Retainer. Guaranteed Results.",
     template: "%s | GrowthAgency.dev",
   },
   description: SITE_DESCRIPTION,
   keywords: [
-    "growth agency",
-    "guaranteed growth",
-    "sales outreach",
-    "cold email agency",
     "PR agency",
     "press coverage",
-    "AI search ranking",
+    "guaranteed PR",
+    "no retainer PR",
+    "AI search visibility",
+    "organic press",
+    "DR50 backlinks",
     "SEO backlinks",
-    "lead generation",
+    "press agency",
+    "journalist outreach",
     "money-back guarantee",
-    "dedicated strategist",
     "GrowthAgency.dev",
   ],
   authors: [{ name: "Kevin Lourd", url: "https://www.linkedin.com/in/kevin-lourd-3394b025/" }],
@@ -38,15 +38,15 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: SITE_URL,
     siteName: SITE_NAME,
-    title: "GrowthAgency.dev — Your Growth Team, Guaranteed Results",
+    title: "GrowthAgency.dev — Your PR Agency. No Retainer. Guaranteed Results.",
     description:
-      "Sales outreach, PR, AI search visibility, and SEO — with a dedicated strategist and guaranteed results. Money-back guarantee.",
+      "$5,000 per article in a DR50+ publication. Delivered or 100% refunded. No retainer, no commitment.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "GrowthAgency.dev — Your Growth Team, Guaranteed Results",
+    title: "GrowthAgency.dev — Your PR Agency. No Retainer. Guaranteed Results.",
     description:
-      "Sales outreach, PR, AI search visibility, and SEO — with a dedicated strategist and guaranteed results.",
+      "$5,000 per article in a DR50+ publication. Delivered or 100% refunded. No retainer, no commitment.",
   },
   robots: {
     index: true,
@@ -68,53 +68,28 @@ const organizationJsonLd = {
   image: `${SITE_URL}/favicon.svg`,
   description: SITE_DESCRIPTION,
   email: "kevin@growthagency.dev",
-  priceRange: "$$",
+  priceRange: "$$$",
   areaServed: "Worldwide",
   serviceType: [
-    "Sales Lead Generation",
     "Public Relations",
-    "SEO",
+    "Press Coverage",
     "AI Search Optimization",
+    "SEO Backlinks",
   ],
   hasOfferCatalog: {
     "@type": "OfferCatalog",
-    name: "Growth Services",
+    name: "PR Services",
     itemListElement: [
       {
         "@type": "Offer",
         itemOffered: {
           "@type": "Service",
-          name: "Sales Lead Generation",
+          name: "Guaranteed Press Article",
           description:
-            "Qualified prospects delivered to your inbox. Personalized outreach, smart follow-ups, and continuous optimization.",
+            "One article in a DR50+ publication with permanent do-follow backlink. $5,000 per article, delivered or 100% refunded.",
         },
-      },
-      {
-        "@type": "Offer",
-        itemOffered: {
-          "@type": "Service",
-          name: "Press Coverage & PR",
-          description:
-            "Real articles in real publications. Organic press coverage for brand credibility, SEO, and AI search visibility.",
-        },
-      },
-      {
-        "@type": "Offer",
-        itemOffered: {
-          "@type": "Service",
-          name: "AI Search Visibility",
-          description:
-            "Appear in ChatGPT, Perplexity, and AI-powered search results through organic press coverage and quality backlinks.",
-        },
-      },
-      {
-        "@type": "Offer",
-        itemOffered: {
-          "@type": "Service",
-          name: "SEO & Backlinks",
-          description:
-            "High-authority backlinks from real press coverage. Each article is a permanent SEO asset that compounds over time.",
-        },
+        price: "5000",
+        priceCurrency: "USD",
       },
     ],
   },
@@ -126,18 +101,17 @@ const organizationJsonLd = {
     "@id": `${SITE_URL}/#founder`,
     name: "Kevin Lourd",
     url: "https://www.linkedin.com/in/kevin-lourd-3394b025/",
-    jobTitle: "Founder & Growth Strategist",
+    jobTitle: "Founder & PR Strategist",
     worksFor: {
       "@id": `${SITE_URL}/#organization`,
     },
   },
   knowsAbout: [
-    "Sales outreach",
-    "Lead generation",
     "Public relations",
     "Press coverage",
-    "Search engine optimization",
+    "Journalist outreach",
     "AI search visibility",
+    "Search engine optimization",
     "Growth strategy",
   ],
 };
@@ -160,7 +134,7 @@ const faqJsonLd = {
       name: "What does GrowthAgency.dev do?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "GrowthAgency.dev is a growth agency that handles sales outreach, PR and press coverage, AI search visibility, and SEO — with guaranteed results and a money-back guarantee.",
+        text: "GrowthAgency.dev is a premium PR agency that guarantees press coverage. $5,000 per article in a DR50+ publication, delivered or 100% refunded. No retainer, no commitment.",
       },
     },
     {
@@ -168,15 +142,15 @@ const faqJsonLd = {
       name: "Is there a money-back guarantee?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Yes. We offer a full money-back guarantee if we don't deliver the promised results within the agreed timeframe.",
+        text: "Yes. If we don't deliver a published article in a DR50+ publication, you get a full 100% refund. No questions asked.",
       },
     },
     {
       "@type": "Question",
-      name: "How quickly can you start?",
+      name: "How much does it cost?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "We can launch your first campaign within 24 hours. You only need to provide your brand URL and a brief description of your goals.",
+        text: "$5,000 per article. No retainer, no monthly commitment. You pay per article, and each engagement comes with a 100% money-back guarantee.",
       },
     },
     {
@@ -184,7 +158,7 @@ const faqJsonLd = {
       name: "Who is Kevin Lourd?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Kevin Lourd is the founder and dedicated strategist at GrowthAgency.dev. He personally designs growth plans and oversees every campaign.",
+        text: "Kevin Lourd is the founder and dedicated PR strategist at GrowthAgency.dev. He personally designs your PR strategy and oversees every campaign.",
       },
     },
   ],
