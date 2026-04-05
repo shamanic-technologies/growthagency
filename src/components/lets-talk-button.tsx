@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { usePostHog } from "posthog-js/react";
 import { PhoneModal } from "./phone-modal";
 
 interface LetsTalkButtonProps {
@@ -11,10 +12,16 @@ interface LetsTalkButtonProps {
 
 export function LetsTalkButton({ className, children, serviceName }: LetsTalkButtonProps) {
   const [open, setOpen] = useState(false);
+  const posthog = usePostHog();
+
+  const handleClick = () => {
+    posthog?.capture("cta_book_call_clicked", { service_name: serviceName });
+    setOpen(true);
+  };
 
   return (
     <>
-      <button onClick={() => setOpen(true)} className={className}>
+      <button onClick={handleClick} className={className}>
         {children ?? "Let\u2019s Talk"}
       </button>
       {open && (

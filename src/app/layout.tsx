@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { PostHogProvider } from "@/components/posthog-provider";
 import "./globals.css";
 
 const SITE_URL = "https://growthagency.dev";
@@ -185,7 +186,9 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
         />
       </head>
-      <body className="antialiased">{children}</body>
+      <body className="antialiased">
+        <PostHogProvider>{children}</PostHogProvider>
+      </body>
     </html>
   );
 }
