@@ -1,6 +1,6 @@
 import { Navbar } from "@/components/navbar";
 import { LetsTalkButton } from "@/components/lets-talk-button";
-import { ReserveSpotButton } from "@/components/reserve-spot-button";
+import { JoinCohortButton } from "@/components/join-cohort-button";
 import { getCohortInfo, daysUntilMonthKey } from "@/lib/stripe";
 
 export const dynamic = "force-dynamic";
@@ -86,13 +86,6 @@ export default async function Home() {
             </p>
 
             <CohortCard month={cohort.month} spotsRemaining={cohort.spotsRemaining} daysLeft={daysLeft} soldOut={soldOut} />
-
-            <LetsTalkButton
-              serviceName="PR Article"
-              className="px-8 py-4 bg-slate-900 text-white rounded-full hover:bg-slate-800 font-semibold text-lg transition shadow-md hover:shadow-lg cursor-pointer mb-16"
-            >
-              Book a 15-min Call
-            </LetsTalkButton>
 
             <div className="flex flex-wrap gap-8 sm:gap-12 justify-center">
               <div className="text-center">
@@ -345,12 +338,6 @@ export default async function Home() {
             No risk.
           </p>
           <CohortCard month={cohort.month} spotsRemaining={cohort.spotsRemaining} daysLeft={daysLeft} soldOut={soldOut} />
-          <LetsTalkButton
-            serviceName="PR Article"
-            className="px-8 py-4 bg-slate-900 text-white rounded-full hover:bg-slate-800 font-semibold text-lg transition shadow-md hover:shadow-lg cursor-pointer"
-          >
-            Book a 15-min Call
-          </LetsTalkButton>
         </div>
       </section>
 
@@ -462,12 +449,12 @@ function CohortCard({
           Next cohort opens soon
         </p>
       )}
-      <ReserveSpotButton
+      <JoinCohortButton
         disabled={soldOut}
         className="w-full px-6 py-3 bg-emerald-500 text-white rounded-xl hover:bg-emerald-600 font-semibold transition shadow-sm hover:shadow-md cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed mb-3"
       >
-        {soldOut ? "Sold Out" : "Apply \u2014 $5,000"}
-      </ReserveSpotButton>
+        {soldOut ? "Sold Out" : "Join Cohort"}
+      </JoinCohortButton>
       {!soldOut && (
         <p className="text-sm text-slate-400">
           {spotsRemaining} {spotsRemaining === 1 ? "spot" : "spots"} available
