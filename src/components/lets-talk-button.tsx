@@ -6,9 +6,10 @@ import { PhoneModal } from "./phone-modal";
 interface LetsTalkButtonProps {
   className?: string;
   children?: React.ReactNode;
+  serviceName?: string;
 }
 
-export function LetsTalkButton({ className, children }: LetsTalkButtonProps) {
+export function LetsTalkButton({ className, children, serviceName }: LetsTalkButtonProps) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -18,7 +19,7 @@ export function LetsTalkButton({ className, children }: LetsTalkButtonProps) {
       </button>
       {open && (
         <PhoneModal
-          serviceName="Let's Talk"
+          serviceName={serviceName ?? "Let's Talk"}
           onClose={() => setOpen(false)}
         />
       )}

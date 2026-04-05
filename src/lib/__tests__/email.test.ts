@@ -12,10 +12,9 @@ describe("sendEmail", () => {
     mockFetch.mockResolvedValue({ ok: true, text: () => Promise.resolve("") });
   });
 
-  it("sends checkout_receipt with correct headers and body", async () => {
-    await sendEmail("checkout_receipt", "user@example.com", {
-      billingDate: "March 8, 2026",
-      portalUrl: "https://billing.stripe.com/session/123",
+  it("sends reservation_confirmed with correct headers and body", async () => {
+    await sendEmail("reservation_confirmed", "user@example.com", {
+      cohortMonth: "2026-05",
     });
 
     expect(mockFetch).toHaveBeenCalledOnce();
@@ -29,32 +28,31 @@ describe("sendEmail", () => {
     });
 
     const body = JSON.parse(opts.body);
-    expect(body.From).toBe("GrowthAgency.dev <hello@growthagency.dev>");
+    expect(body.From).toBe("Kevin Lourd <kevin@growthagency.dev>");
     expect(body.To).toBe("user@example.com");
-    expect(body.Subject).toBe("Your subscription is confirmed");
-    expect(body.HtmlBody).toContain("March 8, 2026");
-    expect(body.HtmlBody).toContain("https://billing.stripe.com/session/123");
+    expect(body.Subject).toContain("Your spot is reserved");
+    expect(body.HtmlBody).toContain("2026-05");
     expect(body.MessageStream).toBe("my-transactional");
   });
 
-  it("sends checkout_welcome with personal tone", async () => {
-    await sendEmail("checkout_welcome", "user@example.com", {
-      billingDate: "March 8, 2026",
+  it("sends reservation_notification to Kevin", async () => {
+    await sendEmail("reservation_notification", "kevin@growthagency.dev", {
+      email: "client@example.com",
+      cohortMonth: "2026-05",
     });
 
     const body = JSON.parse(mockFetch.mock.calls[0][1].body);
-    expect(body.From).toBe("Kevin Lourd <kevin@growthagency.dev>");
-    expect(body.Subject).toBe("Welcome to GrowthAgency.dev — let's grow together");
-    expect(body.HtmlBody).toContain("help you grow, rise, and expand");
-    expect(body.TextBody).toContain("Kevin Lourd");
+    expect(body.From).toBe("GrowthAgency.dev <hello@growthagency.dev>");
+    expect(body.Subject).toContain("New reservation");
+    expect(body.Subject).toContain("client@example.com");
+    expect(body.HtmlBody).toContain("client@example.com");
   });
 
   it("falls back to 'outbound' when POSTMARK_TRANSACTIONAL_STREAM_ID is not set", async () => {
     delete process.env.POSTMARK_TRANSACTIONAL_STREAM_ID;
 
-    await sendEmail("checkout_receipt", "user@example.com", {
-      billingDate: "March 8, 2026",
-      portalUrl: "https://billing.stripe.com/session/123",
+    await sendEmail("reservation_confirmed", "user@example.com", {
+      cohortMonth: "2026-05",
     });
 
     const body = JSON.parse(mockFetch.mock.calls[0][1].body);
@@ -63,27 +61,25 @@ describe("sendEmail", () => {
 
   it("interpolates variables in subject, htmlBody, and textBody", async () => {
     await sendEmail("contact_welcome", "lead@example.com", {
-      serviceName: "Organic Press",
+      serviceName: "PR Article",
     });
 
     const body = JSON.parse(mockFetch.mock.calls[0][1].body);
-    expect(body.Subject).toBe("Welcome to GrowthAgency — Organic Press");
-    expect(body.HtmlBody).toContain("<strong>Organic Press</strong>");
-    expect(body.TextBody).toContain('"Organic Press"');
+    expect(body.Subject).toContain("PR Article");
+    expect(body.HtmlBody).toContain("<strong>PR Article</strong>");
+    expect(body.TextBody).toContain('"PR Article"');
   });
 
   it("interpolates multiple variables", async () => {
     await sendEmail("contact_lead_ready", "kevin@growthagency.dev", {
-      serviceName: "SEO",
+      serviceName: "PR Article",
       email: "lead@example.com",
       phone: "+1234567890",
     });
 
     const body = JSON.parse(mockFetch.mock.calls[0][1].body);
-    expect(body.Subject).toBe(
-      "New lead ready: SEO — lead@example.com / +1234567890",
-    );
-    expect(body.HtmlBody).toContain("<strong>SEO</strong>");
+    expect(body.Subject).toContain("lead@example.com");
+    expect(body.HtmlBody).toContain("<strong>PR Article</strong>");
     expect(body.HtmlBody).toContain("lead@example.com");
     expect(body.HtmlBody).toContain("+1234567890");
   });
@@ -91,9 +87,8 @@ describe("sendEmail", () => {
   it("skips send when POSTMARK_API_KEY is missing", async () => {
     vi.stubEnv("POSTMARK_API_KEY", "");
 
-    await sendEmail("checkout_receipt", "user@example.com", {
-      billingDate: "March 8, 2026",
-      portalUrl: "https://example.com",
+    await sendEmail("reservation_confirmed", "user@example.com", {
+      cohortMonth: "2026-05",
     });
 
     expect(mockFetch).not.toHaveBeenCalled();
@@ -106,7 +101,7 @@ describe("sendEmail", () => {
 
     expect(mockFetch).not.toHaveBeenCalled();
     expect(consoleSpy).toHaveBeenCalledWith(
-      "[email] Unknown event type: unknown_event",
+      "[growthagency] Unknown event type: unknown_event",
     );
     consoleSpy.mockRestore();
   });
@@ -119,13 +114,12 @@ describe("sendEmail", () => {
     });
     const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 
-    await sendEmail("checkout_receipt", "bad@", {
-      billingDate: "March 8, 2026",
-      portalUrl: "https://example.com",
+    await sendEmail("reservation_confirmed", "bad@", {
+      cohortMonth: "2026-05",
     });
 
     expect(consoleSpy).toHaveBeenCalledWith(
-      "[email] Postmark send failed:",
+      "[growthagency] Postmark send failed:",
       422,
       "Invalid email",
     );
@@ -136,13 +130,12 @@ describe("sendEmail", () => {
     mockFetch.mockRejectedValueOnce(new Error("Network error"));
     const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 
-    await sendEmail("checkout_receipt", "user@example.com", {
-      billingDate: "March 8, 2026",
-      portalUrl: "https://example.com",
+    await sendEmail("reservation_confirmed", "user@example.com", {
+      cohortMonth: "2026-05",
     });
 
     expect(consoleSpy).toHaveBeenCalledWith(
-      "[email] Postmark send error:",
+      "[growthagency] Postmark send error:",
       expect.any(Error),
     );
     consoleSpy.mockRestore();

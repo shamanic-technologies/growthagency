@@ -1,109 +1,39 @@
 import { NextResponse } from "next/server";
-import Stripe from "stripe";
+import { getStripe, getCohortInfo } from "@/lib/stripe";
 
-function getStripe() {
-  return new Stripe(process.env.STRIPE_SECRET_KEY!);
-}
+export async function POST() {
+  const priceId = process.env.STRIPE_PR_PRICE_ID;
+  if (!priceId) {
+    return NextResponse.json(
+      { error: "Payment not configured" },
+      { status: 503 },
+    );
+  }
 
-const VALID_PRICE_IDS = new Set([
-  "price_1T3YYOGnB9wsOF5vKfXQjvsg", // Organic Press
-  "price_1T3YYPGnB9wsOF5vbWQLuyE8", // Expert Quoting
-  "price_1T3YZ3GnB9wsOF5vsODFmQwZ", // Speaking Events
-  "price_1T3YZ7GnB9wsOF5vqNqpSbav", // Podcast Guest
-  "price_1T3YZAGnB9wsOF5vtpbQgE13", // CREDU Leads
-  "price_1T3YYSGnB9wsOF5vicY71dQl", // SEO Tracker
-  "price_1T3YYTGnB9wsOF5vN4yIBiFW", // GEO Tracker
-]);
-
-interface LineItem {
-  priceId: string;
-  quantity: number;
-}
-
-interface CheckoutBody {
-  lineItems: LineItem[];
-  uid?: string;
-}
-
-export function isOfferExpired(): boolean {
-  const now = new Date();
-  const deadline = new Date(Date.UTC(2026, 2, 16, 0, 0, 0)); // March 16, 2026 00:00 UTC
-  return now >= deadline;
-}
-
-export function calculateTrialEnd(): number {
-  const now = new Date();
-  const target = new Date(now.getTime() + 14 * 24 * 3600 * 1000);
-  return Math.floor(target.getTime() / 1000);
-}
-
-export async function POST(request: Request) {
   try {
-    const { lineItems, uid } = (await request.json()) as CheckoutBody;
+    const cohort = await getCohortInfo();
 
-    if (isOfferExpired()) {
+    if (cohort.spotsRemaining <= 0) {
       return NextResponse.json(
-        { error: "This offer has expired. Please contact us for current pricing." },
-        { status: 403 },
+        { error: "No spots remaining for this cohort. Book a call to discuss the next one." },
+        { status: 409 },
       );
     }
 
-    if (!Array.isArray(lineItems) || lineItems.length === 0) {
-      return NextResponse.json(
-        { error: "No services selected" },
-        { status: 400 },
-      );
-    }
+    const stripe = getStripe();
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://growthagency.dev";
 
-    for (const item of lineItems) {
-      if (!VALID_PRICE_IDS.has(item.priceId)) {
-        return NextResponse.json(
-          { error: "Invalid price ID" },
-          { status: 400 },
-        );
-      }
-      if (
-        !Number.isInteger(item.quantity) ||
-        item.quantity < 1 ||
-        item.quantity > 10
-      ) {
-        return NextResponse.json(
-          { error: "Invalid quantity" },
-          { status: 400 },
-        );
-      }
-    }
-
-    const trialEnd = calculateTrialEnd();
-    const billingDate = new Date(trialEnd * 1000).toLocaleDateString("en-US", {
-      month: "long",
-      day: "numeric",
-      year: "numeric",
-      timeZone: "UTC",
-    });
-
-    const session = await getStripe().checkout.sessions.create({
-      mode: "subscription",
-      allow_promotion_codes: true,
-      line_items: lineItems.map((item) => ({
-        price: item.priceId,
-        quantity: item.quantity,
-      })),
-      subscription_data: {
-        trial_end: trialEnd,
-      },
-      custom_text: {
-        submit: {
-          message: `This is not a free trial. Your services and billing both start on ${billingDate}.`,
-        },
-      },
-      success_url: `${process.env.NEXT_PUBLIC_SITE_URL || "https://growthagency.dev"}/welcome?uid=${encodeURIComponent(uid || "")}&success=true`,
-      cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL || "https://growthagency.dev"}/welcome?uid=${encodeURIComponent(uid || "")}`,
+    const session = await stripe.checkout.sessions.create({
+      mode: "payment",
+      line_items: [{ price: priceId, quantity: 1 }],
+      metadata: { cohort_month: cohort.monthKey },
+      success_url: `${siteUrl}?reserved=true`,
+      cancel_url: siteUrl,
     });
 
     return NextResponse.json({ url: session.url });
   } catch (err) {
-    console.error("Stripe checkout error:", err);
+    console.error("[growthagency] Checkout error:", err);
     return NextResponse.json(
       { error: "Failed to create checkout session" },
       { status: 500 },
