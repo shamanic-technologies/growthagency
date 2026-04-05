@@ -1,12 +1,32 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, afterEach } from "vitest";
 import { register } from "../instrumentation";
 
-const mockFetch = vi.hoisted(() => vi.fn());
-vi.stubGlobal("fetch", mockFetch);
+const mockSetupStripeProducts = vi.hoisted(() => vi.fn());
+
+vi.mock("@/lib/stripe", () => ({
+  setupStripeProducts: mockSetupStripeProducts,
+}));
 
 describe("instrumentation register()", () => {
-  it("does not make any network calls", async () => {
+  afterEach(() => {
+    vi.unstubAllEnvs();
+    vi.clearAllMocks();
+  });
+
+  it("calls setupStripeProducts when STRIPE_SECRET_KEY is set", async () => {
+    vi.stubEnv("STRIPE_SECRET_KEY", "sk_test");
+    mockSetupStripeProducts.mockResolvedValue(undefined);
+
     await register();
-    expect(mockFetch).not.toHaveBeenCalled();
+
+    expect(mockSetupStripeProducts).toHaveBeenCalledOnce();
+  });
+
+  it("does not call setupStripeProducts when STRIPE_SECRET_KEY is missing", async () => {
+    vi.stubEnv("STRIPE_SECRET_KEY", "");
+
+    await register();
+
+    expect(mockSetupStripeProducts).not.toHaveBeenCalled();
   });
 });
