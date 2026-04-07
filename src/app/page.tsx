@@ -156,8 +156,27 @@ export default async function Home() {
           <h2 className="text-3xl md:text-4xl font-semibold text-center mb-12 text-slate-900 tracking-tight">
             A Different Kind of Agency
           </h2>
-          <div className="overflow-x-auto -mx-4 px-4">
-            <table className="w-full text-left min-w-[500px]">
+          {/* Mobile: stacked cards */}
+          <div className="space-y-4 sm:hidden">
+            {COMPARISON.map(([label, traditional, growth]) => (
+              <div key={label} className="bg-white rounded-xl border border-slate-100 p-4">
+                <p className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-2">{label}</p>
+                <div className="flex items-start gap-3">
+                  <div className="flex-1">
+                    <p className="text-xs text-slate-400 mb-0.5">Traditional</p>
+                    <p className="text-sm text-slate-500">{traditional}</p>
+                  </div>
+                  <div className="flex-1 bg-emerald-50/50 rounded-lg p-2">
+                    <p className="text-xs text-emerald-600 mb-0.5">GrowthAgency</p>
+                    <p className="text-sm font-medium text-slate-900">{growth}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          {/* Desktop: table */}
+          <div className="hidden sm:block overflow-x-auto">
+            <table className="w-full text-left">
               <thead>
                 <tr>
                   <th className="py-4 px-4 text-sm text-slate-400 font-medium" />
@@ -240,10 +259,10 @@ export default async function Home() {
             {VALUE_STACK.map((row) => (
               <div
                 key={row.item}
-                className="flex justify-between items-center py-3 border-b border-slate-700/50"
+                className="flex flex-col sm:flex-row sm:justify-between sm:items-center py-3 border-b border-slate-700/50 gap-1 sm:gap-4"
               >
                 <span className="text-slate-200">{row.item}</span>
-                <span className="text-slate-400 text-sm shrink-0 ml-4">
+                <span className="text-slate-400 text-sm shrink-0">
                   {row.value}
                 </span>
               </div>
