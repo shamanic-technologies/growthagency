@@ -135,7 +135,7 @@ export function PhoneModal({ serviceName, onClose }: PhoneModalProps) {
                 Book a Call with Kevin
               </h3>
               <p className="text-sm text-slate-500">
-                Drop your email and we&apos;ll set up a quick 15-minute chat.
+                We&apos;re a growth marketing agency. Drop your email and we&apos;ll set up a 15-minute chat to discuss how we can accelerate your growth.
               </p>
             </div>
 
