@@ -23,7 +23,7 @@ export function CohortBanner({ month, spotsRemaining, daysLeft, soldOut }: Cohor
             <>{month} Cohort — Sold Out</>
           ) : (
             <>
-              {month} Cohort — {spotsRemaining} {spotsRemaining === 1 ? "spot" : "spots"} left
+              Join us as a client in our {month} Cohort — {spotsRemaining} {spotsRemaining === 1 ? "spot" : "spots"} left
               {daysLeft > 0 && (
                 <span className="text-slate-400 ml-1">
                   ({daysLeft} {daysLeft === 1 ? "day" : "days"} remaining)
