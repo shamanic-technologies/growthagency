@@ -143,4 +143,105 @@ describe("POST /api/contact", () => {
     const res = await POST(req);
     expect(res.status).toBe(500);
   });
+
+  // Assessment flow tests
+
+  it("sends assessment welcome + notification on step=assessment_email", async () => {
+    const res = await POST(
+      makeRequest({
+        step: "assessment_email",
+        email: "lead@example.com",
+        websiteUrl: "https://example.com",
+      }),
+    );
+
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.success).toBe(true);
+
+    expect(mockFetch).toHaveBeenCalledTimes(2);
+
+    const bodies = mockFetch.mock.calls.map(
+      (c: [string, { body: string }]) => JSON.parse(c[1].body),
+    );
+
+    // Welcome email to the lead
+    const welcome = bodies.find(
+      (b: { To: string }) => b.To === "lead@example.com",
+    );
+    expect(welcome).toBeDefined();
+    expect(welcome.Subject).toBe("Your free growth assessment is on its way");
+    expect(welcome.HtmlBody).toContain("https://example.com");
+
+    // Notification to Kevin
+    const notify = bodies.find(
+      (b: { To: string }) => b.To === "kevin@growthagency.dev",
+    );
+    expect(notify).toBeDefined();
+    expect(notify.Subject).toContain("New assessment request");
+    expect(notify.Subject).toContain("lead@example.com");
+    expect(notify.Subject).toContain("https://example.com");
+  });
+
+  it("returns 400 when websiteUrl is missing on step=assessment_email", async () => {
+    const res = await POST(
+      makeRequest({
+        step: "assessment_email",
+        email: "lead@example.com",
+      }),
+    );
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.error).toBe("Missing websiteUrl");
+  });
+
+  it("sends assessment lead notification on step=assessment_whatsapp", async () => {
+    const res = await POST(
+      makeRequest({
+        step: "assessment_whatsapp",
+        email: "lead@example.com",
+        phone: "+33612345678",
+        websiteUrl: "https://example.com",
+      }),
+    );
+
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.success).toBe(true);
+
+    expect(mockFetch).toHaveBeenCalledTimes(1);
+
+    const sent = JSON.parse(mockFetch.mock.calls[0][1].body);
+    expect(sent.To).toBe("kevin@growthagency.dev");
+    expect(sent.Subject).toContain("Assessment lead + WhatsApp");
+    expect(sent.Subject).toContain("lead@example.com");
+    expect(sent.Subject).toContain("+33612345678");
+    expect(sent.HtmlBody).toContain("https://example.com");
+  });
+
+  it("returns 400 when phone is missing on step=assessment_whatsapp", async () => {
+    const res = await POST(
+      makeRequest({
+        step: "assessment_whatsapp",
+        email: "lead@example.com",
+        websiteUrl: "https://example.com",
+      }),
+    );
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.error).toBe("Missing phone");
+  });
+
+  it("returns 400 when websiteUrl is missing on step=assessment_whatsapp", async () => {
+    const res = await POST(
+      makeRequest({
+        step: "assessment_whatsapp",
+        email: "lead@example.com",
+        phone: "+33612345678",
+      }),
+    );
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.error).toBe("Missing websiteUrl");
+  });
 });

@@ -140,4 +140,46 @@ describe("sendEmail", () => {
     );
     consoleSpy.mockRestore();
   });
+
+  it("sends assessment_welcome with websiteUrl", async () => {
+    await sendEmail("assessment_welcome", "lead@example.com", {
+      websiteUrl: "https://example.com",
+    });
+
+    const body = JSON.parse(mockFetch.mock.calls[0][1].body);
+    expect(body.From).toBe("Kevin Lourd <kevin@growthagency.dev>");
+    expect(body.Subject).toBe("Your free growth assessment is on its way");
+    expect(body.HtmlBody).toContain("https://example.com");
+    expect(body.TextBody).toContain("https://example.com");
+  });
+
+  it("sends assessment_email_captured with email and websiteUrl", async () => {
+    await sendEmail("assessment_email_captured", "kevin@growthagency.dev", {
+      email: "lead@example.com",
+      websiteUrl: "https://example.com",
+    });
+
+    const body = JSON.parse(mockFetch.mock.calls[0][1].body);
+    expect(body.Subject).toContain("New assessment request");
+    expect(body.Subject).toContain("lead@example.com");
+    expect(body.Subject).toContain("https://example.com");
+    expect(body.HtmlBody).toContain("lead@example.com");
+    expect(body.HtmlBody).toContain("https://example.com");
+  });
+
+  it("sends assessment_lead_ready with email, phone and websiteUrl", async () => {
+    await sendEmail("assessment_lead_ready", "kevin@growthagency.dev", {
+      email: "lead@example.com",
+      phone: "+33612345678",
+      websiteUrl: "https://example.com",
+    });
+
+    const body = JSON.parse(mockFetch.mock.calls[0][1].body);
+    expect(body.Subject).toContain("Assessment lead + WhatsApp");
+    expect(body.Subject).toContain("lead@example.com");
+    expect(body.Subject).toContain("+33612345678");
+    expect(body.HtmlBody).toContain("lead@example.com");
+    expect(body.HtmlBody).toContain("+33612345678");
+    expect(body.HtmlBody).toContain("https://example.com");
+  });
 });
