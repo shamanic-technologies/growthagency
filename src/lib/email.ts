@@ -5,7 +5,10 @@ type EventType =
   | "reservation_notification"
   | "contact_welcome"
   | "contact_email_captured"
-  | "contact_lead_ready";
+  | "contact_lead_ready"
+  | "assessment_welcome"
+  | "assessment_email_captured"
+  | "assessment_lead_ready";
 
 interface TemplateDefinition {
   from: string;
@@ -136,6 +139,54 @@ Founder, GrowthAgency.dev`,
   <p style="color:#94a3b8;margin-top:12px;font-size:13px;">WhatsApp link opened for the user. Follow up if they don't message.</p>
 </div>`,
     textBody: `New lead from growthagency.dev\nService: {{serviceName}}\nEmail: {{email}}\nPhone: {{phone}}\nWhatsApp link opened for the user.`,
+  },
+
+  assessment_welcome: {
+    from: "Kevin Lourd <kevin@growthagency.dev>",
+    subject: "Your free growth assessment is on its way",
+    htmlBody: `<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;max-width:480px;margin:0 auto;padding:32px 0;">
+  <h2 style="color:#0f172a;font-size:20px;margin-bottom:16px;">Your assessment is on its way!</h2>
+  <p style="color:#64748b;line-height:1.6;margin-bottom:16px;">
+    We're reviewing <strong>{{websiteUrl}}</strong> and preparing personalized recommendations for your growth.
+  </p>
+  <p style="color:#64748b;line-height:1.6;margin-bottom:24px;">
+    Expect to hear from us within 48 hours. In the meantime, feel free to reply to this email with any questions.
+  </p>
+  <p style="color:#0f172a;font-weight:500;">
+    \u2014 Kevin Lourd<br/>
+    <span style="color:#64748b;font-weight:400;">GrowthAgency.dev</span>
+  </p>
+</div>`,
+    textBody: `Your assessment is on its way! We're reviewing {{websiteUrl}} and preparing personalized recommendations for your growth. Expect to hear from us within 48 hours. Feel free to reply with any questions. \u2014 Kevin Lourd, GrowthAgency.dev`,
+  },
+
+  assessment_email_captured: {
+    from: "GrowthAgency.dev <hello@growthagency.dev>",
+    subject: "New assessment request: {{email}} \u2014 {{websiteUrl}}",
+    htmlBody: `<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;padding:16px 0;">
+  <h3 style="color:#0f172a;margin-bottom:12px;">New assessment request on growthagency.dev</h3>
+  <table style="color:#334155;line-height:1.8;">
+    <tr><td style="padding-right:16px;color:#94a3b8;">Email</td><td>{{email}}</td></tr>
+    <tr><td style="padding-right:16px;color:#94a3b8;">Website</td><td><a href="{{websiteUrl}}" style="color:#10b981;">{{websiteUrl}}</a></td></tr>
+  </table>
+  <p style="color:#94a3b8;margin-top:12px;font-size:13px;">Waiting for WhatsApp number (step 2).</p>
+</div>`,
+    textBody: `New assessment request on growthagency.dev\nEmail: {{email}}\nWebsite: {{websiteUrl}}\nWaiting for WhatsApp number (step 2).`,
+  },
+
+  assessment_lead_ready: {
+    from: "GrowthAgency.dev <hello@growthagency.dev>",
+    subject: "Assessment lead + WhatsApp: {{email}} / {{phone}} \u2014 {{websiteUrl}}",
+    htmlBody: `<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;padding:16px 0;">
+  <h3 style="color:#0f172a;margin-bottom:12px;">Assessment lead with WhatsApp</h3>
+  <table style="color:#334155;line-height:1.8;">
+    <tr><td style="padding-right:16px;color:#94a3b8;">Email</td><td>{{email}}</td></tr>
+    <tr><td style="padding-right:16px;color:#94a3b8;">Phone</td><td>{{phone}}</td></tr>
+    <tr><td style="padding-right:16px;color:#94a3b8;">Website</td><td><a href="{{websiteUrl}}" style="color:#10b981;">{{websiteUrl}}</a></td></tr>
+  </table>
+  <p style="color:#94a3b8;margin-top:12px;font-size:13px;">WhatsApp link opened for the user. Follow up if they don't message.</p>
+</div>`,
+    textBody: `Assessment lead with WhatsApp\nEmail: {{email}}\nPhone: {{phone}}\nWebsite: {{websiteUrl}}\nWhatsApp link opened for the user.`,
   },
 };
 

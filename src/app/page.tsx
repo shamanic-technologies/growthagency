@@ -1,57 +1,55 @@
 import { Navbar } from "@/components/navbar";
 import { LetsTalkButton } from "@/components/lets-talk-button";
-import { JoinCohortButton } from "@/components/join-cohort-button";
+import { AssessmentForm } from "@/components/assessment-form";
+import { CohortBanner } from "@/components/cohort-banner";
 import { getCohortInfo, daysUntilMonthKey } from "@/lib/stripe";
 
 export const dynamic = "force-dynamic";
 
 const FAQ_ITEMS = [
   {
-    q: "What is a DR50+ article?",
-    a: "DR (Domain Rating) is a metric from Ahrefs that measures a website\u2019s authority on a scale of 0\u2013100. A DR50+ publication is a well-established, reputable outlet \u2014 industry magazines, major news sites, respected online publications. Each article includes a permanent do-follow backlink to your site.",
+    q: "What is a free growth assessment?",
+    a: "We analyze your brand, your online presence, and your goals \u2014 then recommend specific tools and strategies to accelerate your growth. It\u2019s completely free, no strings attached.",
   },
   {
-    q: 'What does "delivered" mean exactly?',
-    a: "Within 30 days, we guarantee a positive journalist engagement for your brand: an interview request, a Q&A submission, or an op-ed opportunity. The publication date of the final article depends on the journalist\u2019s editorial calendar and may take a few additional weeks. But you\u2019ll have a confirmed, committed journalist within the first month.",
+    q: "What areas do you cover?",
+    a: "Thought leadership & press, sales outreach, hiring automation, AI search visibility, and SEO. We tailor recommendations to what matters most for your business.",
   },
   {
-    q: "What if the article isn\u2019t published?",
-    a: "If we don\u2019t deliver a published article in a DR50+ publication, you get a full refund. 100%. No questions asked, no fine print.",
+    q: "How long does the assessment take?",
+    a: "We just need your website URL and email. Our team reviews your brand and gets back to you within 48 hours with personalized recommendations.",
   },
   {
-    q: "Do I need to write anything?",
-    a: "No. We handle everything \u2014 from strategy to journalist outreach to content coordination. All we need is a 15-minute call to understand your brand and goals.",
-  },
-  {
-    q: "How many articles can I order?",
-    a: "As many as you want \u2014 one at a time or several in parallel. Each article is a separate $5,000 engagement with its own guarantee.",
-  },
-  {
-    q: "Why no retainer?",
-    a: "Because you should pay for results, not promises. We believe in accountability: if we don\u2019t deliver, we don\u2019t deserve your money.",
+    q: "Do I need to commit to anything?",
+    a: "No. The assessment is free. If you want to work with us after, we\u2019ll discuss options tailored to your needs.",
   },
   {
     q: "What\u2019s the cohort system?",
     a: "Kevin works with a limited number of clients each month to ensure personalized attention. Once spots are filled, you join the next month\u2019s cohort.",
   },
+  {
+    q: "How do I get started?",
+    a: "Enter your website URL on this page, share your email, and we\u2019ll take it from there. The whole process takes 30 seconds.",
+  },
 ];
 
-const COMPARISON = [
-  ["Commitment", "6-month retainer minimum", "None. Article by article."],
-  ["Price", "$10\u201320K/month", "$5,000 per article"],
-  ["Guarantee", "None", "100% refund if not delivered"],
-  ["Your Time", "4+ hours/month of meetings", "15 minutes. Total."],
-  ["Timeline", "6+ months, maybe", "First pitches in 24h"],
-  ["Tracking", "Monthly PDF report", "Self-served dashboard"],
-];
-
-const VALUE_STACK = [
-  { item: "1 guaranteed article in a DR50+ publication", value: "$3,000\u2013$5,000" },
-  { item: "Permanent do-follow backlink", value: "$500\u2013$2,000" },
-  { item: "AI Search visibility boost (ChatGPT, Perplexity)", value: "Priceless" },
-  { item: "Kevin\u2019s personal PR strategy session", value: "$500+" },
-  { item: "200+ personalized journalist pitches", value: "$4,000+" },
-  { item: "Real-time campaign tracking", value: "$200/mo" },
+const SERVICES = [
+  {
+    title: "Thought Leadership & Press",
+    desc: "Get published in top-tier publications. Build authority and credibility for your brand with real articles and backlinks.",
+  },
+  {
+    title: "Sales Outreach",
+    desc: "Qualified prospects in your inbox. We handle targeting, outreach, and follow-ups \u2014 you close the deals.",
+  },
+  {
+    title: "Hiring Automation",
+    desc: "Automate your recruiting pipeline. Source, screen, and engage candidates at scale without the manual grind.",
+  },
+  {
+    title: "AI Search Visibility",
+    desc: "Appear in ChatGPT, Perplexity, and AI-powered search results. Be where your customers are looking next.",
+  },
 ];
 
 export default async function Home() {
@@ -61,79 +59,63 @@ export default async function Home() {
 
   return (
     <main className="min-h-screen">
-      <Navbar />
+      <div className="sticky top-0 z-50">
+        <CohortBanner month={cohort.month} spotsRemaining={cohort.spotsRemaining} daysLeft={daysLeft} soldOut={soldOut} />
+        <Navbar />
+      </div>
 
       {/* Hero */}
       <section className="gradient-hero py-16 sm:py-24 md:py-40 px-4 overflow-hidden">
         <div className="max-w-4xl mx-auto text-center hero-glow">
           <div className="relative z-10">
             <div className="inline-block bg-emerald-50 text-emerald-600 px-4 py-1.5 rounded-full text-sm font-medium mb-8 border border-emerald-100">
-              No Retainer. Guaranteed Results.
+              Free Growth Assessment
             </div>
             <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold mb-6 text-slate-900 leading-tight tracking-tight">
-              Your PR Agency.
+              We Help Brands
               <br />
-              <span className="gradient-text">Guaranteed Results.</span>
+              <span className="gradient-text">Grow Faster.</span>
             </h1>
             <p className="text-lg sm:text-xl md:text-2xl text-slate-500 mb-4 max-w-2xl mx-auto leading-relaxed">
-              One article in a DR50+ publication. $5,000.
+              Get a free, personalized assessment of the tools and strategies
               <br className="hidden sm:block" />
-              Delivered or 100% refunded.
+              that could accelerate your growth.
             </p>
             <p className="text-slate-400 mb-8 max-w-xl mx-auto text-sm">
-              No retainer. No commitment. You pay per article, we deliver or you
-              get every cent back.
+              Just enter your website URL. We&apos;ll do the rest.
             </p>
 
-            <CohortCard month={cohort.month} spotsRemaining={cohort.spotsRemaining} daysLeft={daysLeft} soldOut={soldOut} />
+            <AssessmentForm variant="hero" />
 
-            <div className="flex flex-wrap gap-8 sm:gap-12 justify-center">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-slate-900">$5,000</div>
-                <div className="text-sm text-slate-400">Per Article</div>
-              </div>
+            <div className="flex flex-wrap gap-8 sm:gap-12 justify-center mt-10">
               <div className="text-center">
                 <div className="text-3xl font-bold text-slate-900">100%</div>
-                <div className="text-sm text-slate-400">Money-Back Guarantee</div>
+                <div className="text-sm text-slate-400">Free</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-slate-900">DR50+</div>
-                <div className="text-sm text-slate-400">Publication Quality</div>
+                <div className="text-3xl font-bold text-slate-900">48h</div>
+                <div className="text-sm text-slate-400">Turnaround</div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-slate-900">Personalized</div>
+                <div className="text-sm text-slate-400">To Your Brand</div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Problem */}
+      {/* What We Help With */}
       <section className="py-16 sm:py-24 px-4 bg-white">
         <div className="max-w-5xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-semibold text-center mb-4 text-slate-900 tracking-tight">
-            The PR Agency Problem
+            What We Can Help You With
           </h2>
           <p className="text-slate-500 text-center mb-12 max-w-2xl mx-auto">
-            Traditional PR agencies were built for Fortune 500 companies.
-            They haven&apos;t adapted.
+            Every brand is different. We&apos;ll recommend what makes sense for yours.
           </p>
           <div className="grid md:grid-cols-2 gap-6">
-            {[
-              {
-                title: "6-Month Retainers",
-                desc: "Locked into a $10\u201320K/month contract before seeing a single result. Cancel early? Good luck.",
-              },
-              {
-                title: "Endless Meetings",
-                desc: "4 hours of meetings per month. Briefs, decks, reviews, status calls. You\u2019re paying them AND doing their homework.",
-              },
-              {
-                title: "Zero Guarantees",
-                desc: "\u201CWe\u2019ll do our best\u201D isn\u2019t a guarantee. You pay $60\u2013120K per year with no promise of a single published article.",
-              },
-              {
-                title: "Opaque Reporting",
-                desc: "A monthly PDF showing \u201C200 journalists pitched.\u201D No visibility into what\u2019s actually happening.",
-              },
-            ].map((item) => (
+            {SERVICES.map((item) => (
               <div
                 key={item.title}
                 className="bg-slate-50 rounded-2xl p-6 border border-slate-100"
@@ -150,64 +132,8 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Comparison */}
-      <section className="py-16 sm:py-24 px-4 bg-slate-50">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-semibold text-center mb-12 text-slate-900 tracking-tight">
-            A Different Kind of Agency
-          </h2>
-          {/* Mobile: stacked cards */}
-          <div className="space-y-4 sm:hidden">
-            {COMPARISON.map(([label, traditional, growth]) => (
-              <div key={label} className="bg-white rounded-xl border border-slate-100 p-4">
-                <p className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-2">{label}</p>
-                <div className="flex items-start gap-3">
-                  <div className="flex-1">
-                    <p className="text-xs text-slate-400 mb-0.5">Traditional</p>
-                    <p className="text-sm text-slate-500">{traditional}</p>
-                  </div>
-                  <div className="flex-1 bg-emerald-50/50 rounded-lg p-2">
-                    <p className="text-xs text-emerald-600 mb-0.5">GrowthAgency</p>
-                    <p className="text-sm font-medium text-slate-900">{growth}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-          {/* Desktop: table */}
-          <div className="hidden sm:block overflow-x-auto">
-            <table className="w-full text-left">
-              <thead>
-                <tr>
-                  <th className="py-4 px-4 text-sm text-slate-400 font-medium" />
-                  <th className="py-4 px-4 text-sm text-slate-400 font-medium">
-                    Traditional Agency
-                  </th>
-                  <th className="py-4 px-4 text-sm font-medium text-emerald-600 bg-emerald-50 rounded-t-xl">
-                    GrowthAgency
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="text-sm">
-                {COMPARISON.map(([label, traditional, growth], i) => (
-                  <tr key={label} className={i % 2 === 0 ? "bg-white" : ""}>
-                    <td className="py-3 px-4 font-medium text-slate-700">
-                      {label}
-                    </td>
-                    <td className="py-3 px-4 text-slate-500">{traditional}</td>
-                    <td className="py-3 px-4 font-medium text-slate-900 bg-emerald-50/50">
-                      {growth}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
       {/* How It Works */}
-      <section id="how-it-works" className="py-16 sm:py-24 px-4 bg-white">
+      <section id="how-it-works" className="py-16 sm:py-24 px-4 bg-slate-50">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-semibold text-center mb-12 text-slate-900 tracking-tight">
             Three Steps. That&apos;s It.
@@ -216,18 +142,18 @@ export default async function Home() {
             {[
               {
                 num: "1",
-                title: "15-min call with Kevin",
-                desc: "Share your brand, your goals, and your target audience. Kevin designs your PR strategy on the spot.",
+                title: "Enter your website URL",
+                desc: "That\u2019s all we need to get started. We\u2019ll analyze your brand and online presence.",
               },
               {
                 num: "2",
-                title: "We pitch journalists",
-                desc: "200+ personalized pitches sent to relevant journalists at top-tier publications. You don\u2019t write a single word.",
+                title: "Get your free assessment",
+                desc: "Within 48 hours, you\u2019ll receive personalized recommendations \u2014 tools, strategies, and opportunities tailored to your brand.",
               },
               {
                 num: "3",
-                title: "Article delivered",
-                desc: "You receive your published article in a DR50+ publication with a permanent do-follow backlink.",
+                title: "Let\u2019s talk if you want to go further",
+                desc: "If you like what you see, we\u2019ll build a custom growth plan together. No pressure, no obligation.",
               },
             ].map((step) => (
               <div key={step.num} className="flex gap-5">
@@ -246,57 +172,21 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Value Stack */}
-      <section className="py-16 sm:py-24 px-4 bg-slate-900 text-white">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-semibold text-center mb-4 tracking-tight">
-            What $5,000 Gets You
-          </h2>
-          <p className="text-slate-400 text-center mb-12 max-w-2xl mx-auto">
-            Every component included. No hidden fees, no add-ons.
-          </p>
-          <div className="space-y-4 max-w-2xl mx-auto">
-            {VALUE_STACK.map((row) => (
-              <div
-                key={row.item}
-                className="flex flex-col sm:flex-row sm:justify-between sm:items-center py-3 border-b border-slate-700/50 gap-1 sm:gap-4"
-              >
-                <span className="text-slate-200">{row.item}</span>
-                <span className="text-slate-400 text-sm shrink-0">
-                  {row.value}
-                </span>
-              </div>
-            ))}
-          </div>
-          <div className="text-center mt-12">
-            <p className="text-slate-400 mb-2">
-              Total market value:{" "}
-              <span className="line-through">$8,000-$12,000+</span>
-            </p>
-            <p className="text-3xl font-bold mb-2">Your investment: $5,000</p>
-            <p className="text-emerald-400 font-medium">
-              And if we don&apos;t deliver: $0. 100% refunded.
-            </p>
-          </div>
-        </div>
-      </section>
-
       {/* Beyond Press */}
       <section className="py-16 sm:py-24 px-4 bg-white">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-semibold mb-4 text-slate-900 tracking-tight">
-            Need More Than Press?
+            Want to Talk to Someone?
           </h2>
           <p className="text-slate-500 mb-8 max-w-2xl mx-auto leading-relaxed">
-            GrowthAgency isn&apos;t just PR. Kevin also runs sales outreach
-            campaigns, AI search strategy, and full growth retainers for
-            companies that want the complete package.
+            Prefer a conversation? Book a 15-minute call with Kevin.
+            No pitch, no pressure &mdash; just an honest discussion about your growth.
           </p>
           <LetsTalkButton
-            serviceName="Full Growth Package"
+            serviceName="Growth Consultation"
             className="px-8 py-4 bg-slate-900 text-white rounded-full hover:bg-slate-800 font-semibold text-lg transition shadow-md hover:shadow-lg cursor-pointer"
           >
-            Book a Call &mdash; Let&apos;s Talk Growth
+            Book a Call
           </LetsTalkButton>
         </div>
       </section>
@@ -317,10 +207,10 @@ export default async function Home() {
                 Meet Kevin Lourd
               </h2>
               <p className="text-slate-500 mb-4 leading-relaxed">
-                I built GrowthAgency because PR shouldn&apos;t cost $20K/month
-                with zero guarantees. Every campaign I run is personal &mdash; I
-                design the strategy, oversee the pitches, and make sure you get
-                results.
+                I built GrowthAgency because I believe in giving first.
+                Every conversation starts with understanding your brand and
+                finding real ways to help you grow &mdash; before we talk
+                about anything else.
               </p>
               <p className="text-slate-500 mb-6 leading-relaxed">
                 As your dedicated strategist, I personally oversee every
@@ -347,21 +237,20 @@ export default async function Home() {
       </section>
 
       {/* Final CTA */}
-      <section className="py-16 sm:py-24 px-4 bg-white">
+      <section className="py-16 sm:py-24 px-4 bg-slate-900 text-white">
         <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-semibold mb-4 text-slate-900 tracking-tight">
-            Ready to Get Published?
+          <h2 className="text-3xl md:text-4xl font-semibold mb-4 tracking-tight">
+            Ready to Grow?
           </h2>
-          <p className="text-slate-500 mb-8 max-w-xl mx-auto">
-            You pay per article. We deliver or you get 100% back. No retainer.
-            No risk.
+          <p className="text-slate-400 mb-8 max-w-xl mx-auto">
+            Get your free assessment. Just enter your URL &mdash; we&apos;ll handle the rest.
           </p>
-          <CohortCard month={cohort.month} spotsRemaining={cohort.spotsRemaining} daysLeft={daysLeft} soldOut={soldOut} />
+          <AssessmentForm variant="footer" />
         </div>
       </section>
 
       {/* FAQ */}
-      <section id="faq" className="py-16 sm:py-24 px-4 bg-slate-50">
+      <section id="faq" className="py-16 sm:py-24 px-4 bg-white">
         <div className="max-w-3xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-semibold text-center mb-12 text-slate-900 tracking-tight">
             Frequently Asked Questions
@@ -370,9 +259,9 @@ export default async function Home() {
             {FAQ_ITEMS.map((faq) => (
               <details
                 key={faq.q}
-                className="group bg-white rounded-2xl border border-slate-100 overflow-hidden"
+                className="group bg-slate-50 rounded-2xl border border-slate-100 overflow-hidden"
               >
-                <summary className="flex items-center justify-between px-6 py-4 cursor-pointer font-medium text-slate-900 hover:bg-slate-50 transition list-none">
+                <summary className="flex items-center justify-between px-6 py-4 cursor-pointer font-medium text-slate-900 hover:bg-slate-100 transition list-none">
                   {faq.q}
                   <svg
                     className="w-5 h-5 text-slate-400 shrink-0 ml-4 group-open:rotate-180 transition-transform"
@@ -407,7 +296,7 @@ export default async function Home() {
             </span>
           </div>
           <p className="text-sm mb-6">
-            Your PR agency. No retainer. Guaranteed results.
+            Helping brands grow with the right tools and strategies.
           </p>
           <div className="flex flex-wrap justify-center gap-6 text-sm mb-6">
             <a
@@ -435,50 +324,5 @@ export default async function Home() {
         </div>
       </footer>
     </main>
-  );
-}
-
-function CohortCard({
-  month,
-  spotsRemaining,
-  daysLeft,
-  soldOut,
-}: {
-  month: string;
-  spotsRemaining: number;
-  daysLeft: number;
-  soldOut: boolean;
-}) {
-  return (
-    <div className="inline-block bg-white rounded-2xl border-2 border-emerald-200 px-8 py-6 mb-8 shadow-sm max-w-sm w-full">
-      <div className="flex items-center justify-center gap-2 mb-1">
-        <span className={`w-2 h-2 rounded-full ${soldOut ? "bg-slate-400" : "bg-emerald-500"}`} />
-        <span className={`text-xs font-semibold uppercase tracking-wider ${soldOut ? "text-slate-400" : "text-emerald-600"}`}>
-          {soldOut ? "Sold Out" : "Open"}
-        </span>
-      </div>
-      <h3 className="text-xl font-bold text-slate-900 mb-1">{month} Cohort</h3>
-      {!soldOut && daysLeft > 0 && (
-        <p className="text-sm text-slate-400 mb-4">
-          Closes in {daysLeft} {daysLeft === 1 ? "day" : "days"}
-        </p>
-      )}
-      {soldOut && (
-        <p className="text-sm text-slate-400 mb-4">
-          Next cohort opens soon
-        </p>
-      )}
-      <JoinCohortButton
-        disabled={soldOut}
-        className="w-full px-6 py-3 bg-emerald-500 text-white rounded-xl hover:bg-emerald-600 font-semibold transition shadow-sm hover:shadow-md cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed mb-3"
-      >
-        {soldOut ? "Sold Out" : "Join Cohort"}
-      </JoinCohortButton>
-      {!soldOut && (
-        <p className="text-sm text-slate-400">
-          {spotsRemaining} {spotsRemaining === 1 ? "spot" : "spots"} available
-        </p>
-      )}
-    </div>
   );
 }
