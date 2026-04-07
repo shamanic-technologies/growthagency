@@ -65,8 +65,8 @@ export default async function Home() {
       </div>
 
       {/* Hero */}
-      <section className="gradient-hero py-16 sm:py-24 md:py-40 px-4 overflow-hidden">
-        <div className="max-w-4xl mx-auto text-center hero-glow">
+      <section className="gradient-hero py-16 sm:py-24 px-4 overflow-hidden md:min-h-[calc(100vh-88px)] md:flex md:items-center">
+        <div className="max-w-4xl mx-auto text-center hero-glow w-full">
           <div className="relative z-10">
             <div className="inline-block bg-emerald-50 text-emerald-600 px-4 py-1.5 rounded-full text-sm font-medium mb-8 border border-emerald-100">
               Free Growth Assessment

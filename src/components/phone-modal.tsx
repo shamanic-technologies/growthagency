@@ -132,10 +132,10 @@ export function PhoneModal({ serviceName, onClose }: PhoneModalProps) {
                 </svg>
               </div>
               <h3 className="text-lg font-semibold text-slate-900 mb-1">
-                Let&apos;s get you growing
+                Book a Call with Kevin
               </h3>
               <p className="text-sm text-slate-500">
-                Drop your email and we&apos;ll put together a custom growth plan for you.
+                Drop your email and we&apos;ll set up a quick 15-minute chat.
               </p>
             </div>
 
