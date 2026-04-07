@@ -460,8 +460,8 @@ export function WelcomeCheckout({ config }: { config: ClientConfig }) {
         )}
 
         {/* Sticky bottom bar */}
-        <div className="sticky bottom-0 bg-white/80 backdrop-blur-lg border border-slate-200 rounded-2xl p-5 flex items-center justify-between shadow-lg">
-          <div>
+        <div className="sticky bottom-0 bg-white/80 backdrop-blur-lg border border-slate-200 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4 shadow-lg">
+          <div className="flex items-center justify-between sm:block">
             <p className="text-2xl font-bold text-slate-900">
               ${total.toLocaleString()}
               <span className="text-base font-normal text-slate-400">/mo</span>
@@ -473,7 +473,7 @@ export function WelcomeCheckout({ config }: { config: ClientConfig }) {
           <button
             onClick={handleSubscribe}
             disabled={loading || selectedCount === 0}
-            className="bg-emerald-500 text-white font-semibold px-8 py-3 rounded-xl hover:bg-emerald-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bg-emerald-500 text-white font-semibold px-8 py-3 rounded-xl hover:bg-emerald-600 transition disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
           >
             {loading ? (
               <span className="flex items-center gap-2">
@@ -522,13 +522,13 @@ function ServiceRow({
 
   return (
     <div
-      className={`rounded-2xl border p-5 transition-all duration-200 ${
+      className={`rounded-2xl border p-4 sm:p-5 transition-all duration-200 ${
         isActive
           ? "bg-white border-emerald-200 shadow-sm"
           : "bg-slate-50 border-slate-100"
       }`}
     >
-      <div className="flex items-start justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
             <h3
@@ -554,7 +554,7 @@ function ServiceRow({
           </p>
         </div>
 
-        <div className="flex items-center gap-3 shrink-0">
+        <div className="flex items-center justify-between sm:justify-end gap-3 shrink-0">
           <p
             className={`text-sm font-medium whitespace-nowrap ${isActive ? "text-slate-900" : "text-slate-400"}`}
           >
