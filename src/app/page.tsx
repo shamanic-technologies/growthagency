@@ -78,7 +78,7 @@ export default async function Home() {
               <span className="gradient-text">While You Build.</span>
             </h1>
             <p className="text-lg sm:text-xl md:text-2xl text-slate-500 mb-4 max-w-2xl mx-auto leading-relaxed">
-              We&apos;re a growth agency that builds and runs the tools
+              We&apos;re a growth agency that identifies and runs the tools
               <br className="hidden sm:block" />
               and strategies your brand needs to scale.
             </p>
