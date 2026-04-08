@@ -77,10 +77,8 @@ export default async function Home() {
               <br />
               <span className="gradient-text">While You Build.</span>
             </h1>
-            <p className="text-lg sm:text-xl md:text-2xl text-slate-500 mb-4 max-w-2xl mx-auto leading-relaxed">
-              We&apos;re a growth agency that identifies and runs the AI-marketing
-              <br className="hidden sm:block" />
-              tools your brand needs to scale.
+            <p className="text-lg sm:text-xl md:text-2xl text-slate-500 mb-4 max-w-3xl mx-auto leading-relaxed">
+              We&apos;re a growth agency that identifies and runs the AI-marketing tools your brand needs to scale.
             </p>
             <p className="text-slate-400 mb-8 max-w-xl mx-auto text-sm">
               Start with a free assessment — just enter your URL.
