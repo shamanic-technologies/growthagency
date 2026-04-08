@@ -73,9 +73,9 @@ export default async function Home() {
               Growth Marketing Agency
             </div>
             <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold mb-6 text-slate-900 leading-tight tracking-tight">
-              We Help Brands
+              We Help Your Brand
               <br />
-              <span className="gradient-text">Grow Faster.</span>
+              <span className="gradient-text">Grow When You Sleep.</span>
             </h1>
             <p className="text-lg sm:text-xl md:text-2xl text-slate-500 mb-4 max-w-2xl mx-auto leading-relaxed">
               We&apos;re a growth agency that builds and runs the tools
