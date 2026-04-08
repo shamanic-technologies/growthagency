@@ -66,10 +66,10 @@ export default async function Home() {
         </div>
 
         {/* Hero */}
-        <section className="gradient-hero px-4 overflow-hidden flex-1 flex items-center py-12 sm:py-16">
+        <section className="gradient-hero px-4 overflow-hidden flex-1 flex items-center pt-6 sm:pt-8 pb-12 sm:pb-16">
         <div className="max-w-4xl mx-auto text-center hero-glow w-full">
           <div className="relative z-10">
-            <div className="inline-block bg-emerald-50 text-emerald-600 px-4 py-1.5 rounded-full text-sm font-medium mb-8 border border-emerald-100">
+            <div className="inline-block bg-emerald-50 text-emerald-600 px-4 py-1.5 rounded-full text-sm font-medium mb-6 border border-emerald-100">
               Growth Marketing Agency
             </div>
             <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold mb-6 text-slate-900 leading-tight tracking-tight">
