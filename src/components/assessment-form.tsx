@@ -240,10 +240,10 @@ export function AssessmentForm({ variant = "hero" }: { variant?: "hero" | "foote
         <div className="flex rounded-xl overflow-hidden shadow-lg border border-slate-200 bg-white">
           <input
             id={inputId}
-            type="url"
+            type="text"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
-            placeholder="https://yourcompany.com"
+            placeholder="yourcompany.com"
             className="flex-1 px-4 sm:px-5 py-3.5 sm:py-4 text-slate-900 placeholder:text-slate-400 focus:outline-none text-base sm:text-lg bg-transparent"
             required
           />
