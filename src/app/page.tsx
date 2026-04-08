@@ -59,13 +59,14 @@ export default async function Home() {
 
   return (
     <main className="min-h-screen">
-      <div className="sticky top-0 z-50">
-        <CohortBanner month={cohort.month} spotsRemaining={cohort.spotsRemaining} daysLeft={daysLeft} soldOut={soldOut} />
-        <Navbar />
-      </div>
+      <div className="min-h-svh flex flex-col">
+        <div className="sticky top-0 z-50">
+          <CohortBanner month={cohort.month} spotsRemaining={cohort.spotsRemaining} daysLeft={daysLeft} soldOut={soldOut} />
+          <Navbar />
+        </div>
 
-      {/* Hero */}
-      <section className="gradient-hero px-4 overflow-hidden min-h-[calc(100svh-96px)] flex items-center py-12 sm:py-16">
+        {/* Hero */}
+        <section className="gradient-hero px-4 overflow-hidden flex-1 flex items-center py-12 sm:py-16">
         <div className="max-w-4xl mx-auto text-center hero-glow w-full">
           <div className="relative z-10">
             <div className="inline-block bg-emerald-50 text-emerald-600 px-4 py-1.5 rounded-full text-sm font-medium mb-8 border border-emerald-100">
@@ -103,7 +104,8 @@ export default async function Home() {
             </div>
           </div>
         </div>
-      </section>
+        </section>
+      </div>
 
       {/* What We Help With */}
       <section className="py-16 sm:py-24 px-4 bg-white">
