@@ -65,11 +65,11 @@ export default async function Home() {
       </div>
 
       {/* Hero */}
-      <section className="gradient-hero py-16 sm:py-24 px-4 overflow-hidden md:min-h-[calc(100vh-88px)] md:flex md:items-center">
+      <section className="gradient-hero px-4 overflow-hidden min-h-[calc(100svh-96px)] flex items-center py-12 sm:py-16">
         <div className="max-w-4xl mx-auto text-center hero-glow w-full">
           <div className="relative z-10">
             <div className="inline-block bg-emerald-50 text-emerald-600 px-4 py-1.5 rounded-full text-sm font-medium mb-8 border border-emerald-100">
-              Free Growth Assessment
+              Growth Marketing Agency
             </div>
             <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold mb-6 text-slate-900 leading-tight tracking-tight">
               We Help Brands
@@ -77,12 +77,12 @@ export default async function Home() {
               <span className="gradient-text">Grow Faster.</span>
             </h1>
             <p className="text-lg sm:text-xl md:text-2xl text-slate-500 mb-4 max-w-2xl mx-auto leading-relaxed">
-              Get a free, personalized assessment of the tools and strategies
+              We&apos;re a growth agency that builds and runs the tools
               <br className="hidden sm:block" />
-              that could accelerate your growth.
+              and strategies your brand needs to scale.
             </p>
             <p className="text-slate-400 mb-8 max-w-xl mx-auto text-sm">
-              Just enter your website URL. We&apos;ll do the rest.
+              Start with a free assessment — just enter your URL.
             </p>
 
             <AssessmentForm variant="hero" />
