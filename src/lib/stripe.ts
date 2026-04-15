@@ -24,7 +24,10 @@ export function getProductId(): string | null {
 export async function getPriceId(): Promise<string | null> {
   if (!cachedPriceId && !process.env.STRIPE_PR_PRICE_ID && process.env.STRIPE_SECRET_KEY) {
     if (!setupPromise) {
-      setupPromise = setupStripeProducts();
+      setupPromise = setupStripeProducts().catch((err) => {
+        setupPromise = null;
+        throw err;
+      });
     }
     await setupPromise;
   }

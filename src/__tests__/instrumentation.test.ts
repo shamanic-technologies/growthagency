@@ -22,6 +22,14 @@ describe("instrumentation register()", () => {
     expect(mockSetupStripeProducts).toHaveBeenCalledOnce();
   });
 
+  it("does not crash when setupStripeProducts throws (e.g. Stripe unreachable)", async () => {
+    vi.stubEnv("STRIPE_SECRET_KEY", "sk_test");
+    mockSetupStripeProducts.mockRejectedValue(new Error("StripeConnectionError"));
+
+    await expect(register()).resolves.toBeUndefined();
+    expect(mockSetupStripeProducts).toHaveBeenCalledOnce();
+  });
+
   it("does not call setupStripeProducts when STRIPE_SECRET_KEY is missing", async () => {
     vi.stubEnv("STRIPE_SECRET_KEY", "");
 
