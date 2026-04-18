@@ -39,7 +39,7 @@ export function Navbar() {
             serviceName="PR Article"
             className="bg-slate-900 text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-slate-800 transition cursor-pointer"
           >
-            Book a Call
+            Book an Assessment
           </LetsTalkButton>
         </div>
 
@@ -77,7 +77,7 @@ export function Navbar() {
                 serviceName="PR Article"
                 className="block w-full bg-slate-900 text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-800 text-center cursor-pointer"
               >
-                Book a Call
+                Book an Assessment
               </LetsTalkButton>
             </div>
           </div>

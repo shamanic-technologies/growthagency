@@ -75,10 +75,10 @@ export default async function Home() {
             <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold mb-6 text-slate-900 leading-tight tracking-tight">
               Grow Your Brand
               <br />
-              <span className="gradient-text">While You Build.</span>
+              <span className="gradient-text">Like Never Before.</span>
             </h1>
             <p className="text-lg sm:text-xl md:text-2xl text-slate-500 mb-4 max-w-3xl mx-auto leading-relaxed">
-              We&apos;re a growth agency that identifies and runs the AI-marketing tools your brand needs to scale.
+              We&apos;re a growth agency that provides the best outcome per $ spent of the market.
             </p>
             <p className="text-slate-400 mb-8 max-w-xl mx-auto text-sm">
               Start with a free assessment — just enter your URL.
@@ -186,7 +186,7 @@ export default async function Home() {
             serviceName="Growth Consultation"
             className="px-8 py-4 bg-slate-900 text-white rounded-full hover:bg-slate-800 font-semibold text-lg transition shadow-md hover:shadow-lg cursor-pointer"
           >
-            Book a Call
+            Book an Assessment
           </LetsTalkButton>
         </div>
       </section>
