@@ -328,15 +328,6 @@ export default async function Home() {
             </a>
             <span className="text-slate-700">|</span>
             <a
-              href="https://growthagency.dev"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-emerald-400 transition"
-            >
-              GrowthAgency.dev &mdash; Growth Agency for Humans
-            </a>
-            <span className="text-slate-700">|</span>
-            <a
               href="https://distribute.you"
               target="_blank"
               rel="noopener noreferrer"
