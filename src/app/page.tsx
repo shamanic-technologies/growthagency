@@ -186,7 +186,7 @@ export default async function Home() {
             serviceName="Growth Consultation"
             className="px-8 py-4 bg-slate-900 text-white rounded-full hover:bg-slate-800 font-semibold text-lg transition shadow-md hover:shadow-lg cursor-pointer"
           >
-            Book a Call
+            Book an Assessment
           </LetsTalkButton>
         </div>
       </section>
