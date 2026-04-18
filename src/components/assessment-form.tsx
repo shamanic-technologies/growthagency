@@ -250,7 +250,7 @@ export function AssessmentForm({ variant = "hero" }: { variant?: "hero" | "foote
           <button
             type="submit"
             disabled={!url.trim()}
-            className="px-5 sm:px-8 py-3.5 sm:py-4 bg-emerald-500 text-white font-semibold hover:bg-emerald-600 transition disabled:opacity-40 disabled:cursor-not-allowed shrink-0 text-sm sm:text-base"
+            className="px-5 sm:px-8 py-3.5 sm:py-4 bg-emerald-700 text-white font-semibold hover:bg-emerald-800 transition disabled:opacity-40 disabled:cursor-not-allowed shrink-0 text-sm sm:text-base"
           >
             Get Free Assessment
           </button>
