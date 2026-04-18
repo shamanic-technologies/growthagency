@@ -317,6 +317,43 @@ export default async function Home() {
               Brand
             </a>
           </div>
+          <div className="flex flex-wrap justify-center gap-4 text-xs mb-6">
+            <a
+              href="https://pressbeat.io"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-emerald-400 transition"
+            >
+              PressBeat.io &mdash; Organic Press on Demand
+            </a>
+            <span className="text-slate-700">|</span>
+            <a
+              href="https://growthagency.dev"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-emerald-400 transition"
+            >
+              GrowthAgency.dev &mdash; Growth Agency for Humans
+            </a>
+            <span className="text-slate-700">|</span>
+            <a
+              href="https://distribute.you"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-emerald-400 transition"
+            >
+              Distribute.you &mdash; Outreach Automation for Developers
+            </a>
+            <span className="text-slate-700">|</span>
+            <a
+              href="https://growthservice.org"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-emerald-400 transition"
+            >
+              GrowthService.org &mdash; Increase AI Search Ranking
+            </a>
+          </div>
           <p className="text-xs text-slate-600">
             &copy; {new Date().getFullYear()} GrowthAgency.dev. All rights
             reserved.
