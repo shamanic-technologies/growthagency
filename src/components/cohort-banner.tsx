@@ -16,9 +16,9 @@ export function CohortBanner({ month, spotsRemaining, daysLeft, soldOut }: Cohor
   if (dismissed) return null;
 
   return (
-    <div className="bg-slate-900 text-white px-4 py-2.5 text-center text-sm relative">
-      <div className="flex items-center justify-center gap-3 flex-wrap">
-        <span className="font-medium">
+    <div className="bg-slate-900 text-white py-2.5 pl-4 pr-10 sm:px-4 text-center text-xs sm:text-sm relative">
+      <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 sm:flex-wrap">
+        <span className="font-medium leading-snug break-words">
           {soldOut ? (
             <>{month} Cohort — Sold Out</>
           ) : (
@@ -42,7 +42,7 @@ export function CohortBanner({ month, spotsRemaining, daysLeft, soldOut }: Cohor
       </div>
       <button
         onClick={() => setDismissed(true)}
-        className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-slate-500 hover:text-white transition"
+        className="absolute right-2 sm:right-3 top-2 sm:top-1/2 sm:-translate-y-1/2 p-1 text-slate-500 hover:text-white transition"
         aria-label="Dismiss"
       >
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
