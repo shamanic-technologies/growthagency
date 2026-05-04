@@ -1,7 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { JoinCohortButton } from "./join-cohort-button";
+import {
+  dismissedState,
+  parseBannerState,
+  shouldShowCohortBanner,
+  todayISO,
+} from "@/lib/cohort-banner-state";
 
 interface CohortBannerProps {
   month: string;
@@ -10,10 +16,41 @@ interface CohortBannerProps {
   soldOut: boolean;
 }
 
-export function CohortBanner({ month, spotsRemaining, daysLeft, soldOut }: CohortBannerProps) {
-  const [dismissed, setDismissed] = useState(false);
+const STORAGE_KEY = "cohort-banner-state";
 
-  if (dismissed) return null;
+export function CohortBanner({ month, spotsRemaining, daysLeft, soldOut }: CohortBannerProps) {
+  const [hydrated, setHydrated] = useState(false);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const today = todayISO();
+    const stored = parseBannerState(
+      typeof window !== "undefined" ? window.localStorage.getItem(STORAGE_KEY) : null,
+    );
+    const { show, nextState } = shouldShowCohortBanner(stored, today);
+
+    if (nextState === null) {
+      window.localStorage.removeItem(STORAGE_KEY);
+    } else if (
+      !stored ||
+      stored.dismissedAt !== nextState.dismissedAt ||
+      stored.visitDays.length !== nextState.visitDays.length ||
+      stored.visitDays.some((d, i) => d !== nextState.visitDays[i])
+    ) {
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(nextState));
+    }
+
+    setVisible(show);
+    setHydrated(true);
+  }, []);
+
+  function handleDismiss() {
+    const today = todayISO();
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(dismissedState(today)));
+    setVisible(false);
+  }
+
+  if (!hydrated || !visible) return null;
 
   return (
     <div className="bg-slate-900 text-white py-2.5 pl-4 pr-10 sm:px-4 text-center text-xs sm:text-sm relative">
@@ -41,7 +78,7 @@ export function CohortBanner({ month, spotsRemaining, daysLeft, soldOut }: Cohor
         )}
       </div>
       <button
-        onClick={() => setDismissed(true)}
+        onClick={handleDismiss}
         className="absolute right-2 sm:right-3 top-2 sm:top-1/2 sm:-translate-y-1/2 p-1 text-slate-500 hover:text-white transition"
         aria-label="Dismiss"
       >
