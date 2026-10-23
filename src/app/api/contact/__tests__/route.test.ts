@@ -57,7 +57,7 @@ describe("POST /api/contact", () => {
     }
 
     const bodies = mockFetch.mock.calls.map(
-      (c: [string, { body: string }]) => JSON.parse(c[1].body),
+      (c) => JSON.parse((c as [string, { body: string }])[1].body),
     );
 
     // Welcome email to the lead
@@ -162,7 +162,7 @@ describe("POST /api/contact", () => {
     expect(mockFetch).toHaveBeenCalledTimes(2);
 
     const bodies = mockFetch.mock.calls.map(
-      (c: [string, { body: string }]) => JSON.parse(c[1].body),
+      (c) => JSON.parse((c as [string, { body: string }])[1].body),
     );
 
     // Welcome email to the lead

@@ -115,7 +115,7 @@ describe("POST /api/webhooks/stripe", () => {
 
     expect(mockFetch).toHaveBeenCalledTimes(2);
     const calls = mockFetch.mock.calls.map(
-      ([, opts]: [string, { body: string }]) => JSON.parse(opts.body),
+      (c) => JSON.parse((c as [string, { body: string }])[1].body),
     );
 
     const confirmation = calls.find((b: Record<string, string>) =>
